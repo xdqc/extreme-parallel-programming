@@ -17,21 +17,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="REPORT.txt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="REPORT.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/REPORT.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="20" column="87" lean-forward="true" selection-start-line="20" selection-start-column="87" selection-end-line="20" selection-end-column="87" />
+            <state relative-caret-position="418">
+              <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PhotoTool.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PhotoTool.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/nz/ac/waikato/phototool/PhotoTool.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="647">
-              <caret line="141" column="17" lean-forward="false" selection-start-line="141" selection-start-column="17" selection-end-line="141" selection-end-column="17" />
+            <state relative-caret-position="-367">
+              <caret line="96" column="0" lean-forward="false" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1004#1005#0" expanded="true" />
@@ -80,9 +80,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/REPORT.txt" />
         <option value="$PROJECT_DIR$/src/nz/ac/waikato/phototool/Picture.java" />
         <option value="$PROJECT_DIR$/src/nz/ac/waikato/phototool/PhotoTool.java" />
+        <option value="$PROJECT_DIR$/REPORT.txt" />
       </list>
     </option>
   </component>
@@ -514,7 +514,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13722000" />
+    <option name="totallyTimeSpent" value="15981000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
@@ -930,14 +930,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/REPORT.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="20" column="87" lean-forward="true" selection-start-line="20" selection-start-column="87" selection-end-line="20" selection-end-column="87" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_172/src.zip!/java/awt/image/BufferedImage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
@@ -960,10 +952,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_172/src.zip!/java/lang/Math.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="1334" column="22" lean-forward="false" selection-start-line="1334" selection-start-column="22" selection-end-line="1334" selection-end-column="22" />
+          <folding>
+            <element signature="e#52232#52233#0" expanded="true" />
+            <element signature="e#52271#52272#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/nz/ac/waikato/phototool/PhotoTool.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="647">
-          <caret line="141" column="17" lean-forward="false" selection-start-line="141" selection-start-column="17" selection-end-line="141" selection-end-column="17" />
+        <state relative-caret-position="-367">
+          <caret line="96" column="0" lean-forward="false" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1004#1005#0" expanded="true" />
@@ -977,6 +980,14 @@
             <element signature="e#1957#1958#0" expanded="true" />
             <element signature="e#2006#2007#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/REPORT.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>

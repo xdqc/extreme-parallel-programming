@@ -92,10 +92,8 @@ public class PhotoTool {
         for (int y = 0; y < getHeight(); y++) {         // Task 2.1 Stop boxing!
             for (int x = 0; x < getWidth(); x++) {      // Task 2.1 Stop boxing!
                 int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
-                /**
-                 *  Bitwise calculate average without division
-                 */
-                int average = ((pixel >> 16) & 0xFF + (pixel >> 8) & 0xFF + pixel & 0xFF) / 3;
+                // Calculate average bitwise without division
+                int average = ((((pixel >> 16) & 0xFF + (pixel >> 8) & 0xFF) >> 1) + pixel & 0xFF) >> 1;
                 newPic.set(x, y, (average << 16) | (average << 8) | average); // Task 2.2 Go primitive in your arrays!
             }
         }
@@ -114,9 +112,10 @@ public class PhotoTool {
                 int r = (pixel >> 16) & 0xFF;
                 int g = (pixel >> 8) & 0xFF;
                 int b = pixel & 0xFF;
-                int red = clamp((r * .393) + (g * .769) + (b * .189));
-                int green = clamp((r * .349) + (g * .686) + (b * .168));
-                int blue = clamp((r * .272) + (g * .534) + (b * .131));
+                // Don't need clamp() method here.
+                int red = Math.min((int) ((r * .393) + (g * .769) + (b * .189)), 255);
+                int green = Math.min((int) ((r * .349) + (g * .686) + (b * .168)), 255);
+                int blue = Math.min((int) ((r * .272) + (g * .534) + (b * .131)), 255);
                 newPic.set(x, y, (red << 16) | (green << 8) | blue); // Task 2.2 Go primitive in your arrays!
             }
         }
@@ -131,11 +130,11 @@ public class PhotoTool {
         int scaledHeight = getHeight() / scaleBy;
         int scaledWidth = getWidth() / scaleBy;
         Picture newPic = new Picture(scaledWidth, scaledHeight);
-        // Avoid multiplication, add scaleBy to loop index each iteration, instead
+        // Avoid multiplication, instead, add scaleBy to loop index each iteration
         int y1 = 0;
-        for (int y = 0; y < getHeight(); y+=scaleBy) { // Task 2.1 Stop boxing!
+        for (int y = 0; y < getHeight(); y += scaleBy) { // Task 2.1 Stop boxing!
             int x1 = 0;
-            for (int x = 0; x < getWidth(); x+=scaleBy) { // Task 2.1 Stop boxing!
+            for (int x = 0; x < getWidth(); x += scaleBy) { // Task 2.1 Stop boxing!
                 int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
                 newPic.set(x1++, y1, pixel);
             }

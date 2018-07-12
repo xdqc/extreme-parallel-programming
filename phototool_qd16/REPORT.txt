@@ -19,6 +19,7 @@ Note: using VM arguments:  -Xmx2G
 3. Your Phototool time after task 2:         ?        ?          ?         ?  (seconds)
 
 3. Your Phototool time after task 2.1:     1.0      1.0        1.0       1.0  (seconds)
+3. Your Phototool time after task 2.2:     .38      .38        .38       .38  (seconds)
 
 Answer these questions (10 marks)
 ======================
