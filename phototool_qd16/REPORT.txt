@@ -14,15 +14,20 @@ Note: using VM arguments:  -Xmx2G
    ================================     ======    =====     ======     =====
 0. Original program on MY machine:         2.2      3.1        4.9       8.2  (seconds)
 
-1. Original program on YOUR machine:         ?        ?          ?         ?  (seconds)
-2. Your Phototool time after task 1:         ?        ?          ?         ?  (seconds)
+1. Original program on YOUR machine:       1.2      1.4        2.4       3.4  (seconds)
+2. Your Phototool time after task 1:       1.1      1.2        1.1       1.2  (seconds)
 3. Your Phototool time after task 2:         ?        ?          ?         ?  (seconds)
+
+3. Your Phototool time after task 2.1:     1.0      1.0        1.0       1.0  (seconds)
 
 Answer these questions (10 marks)
 ======================
 4. Does the result of BufferedImage.getRGB (7 args) use row-major or column-major order:  
+BufferedImage.getRGB uses row-major. Because the performance improved significantly after flipping row and col index
+ of for loops, looping through row contiguously.
 
 5. Using RGB int pixels, how many BYTES of memory does one row of Eiffel.jpg consume:
+
 
 6. What CPU (manufacturer and exact CPU model) are you running your program on:  eg. Intel i7-2620M @ 2.7GHz
 

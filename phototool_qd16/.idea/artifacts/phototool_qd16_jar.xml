@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="phototool_qd16:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/phototool_qd16_jar</output-path>
+    <root id="archive" name="phototool_qd16.jar">
+      <element id="module-output" name="phototool_qd16" />
+      <element id="extracted-dir" path="$APPLICATION_HOME_DIR$/lib/junit-4.12.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
