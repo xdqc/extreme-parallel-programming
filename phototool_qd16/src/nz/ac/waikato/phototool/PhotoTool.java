@@ -91,9 +91,12 @@ public class PhotoTool {
         Picture newPic = new Picture(getWidth(), getHeight());
         for (int y = 0; y < getHeight(); y++) {         // Task 2.1 Stop boxing!
             for (int x = 0; x < getWidth(); x++) {      // Task 2.1 Stop boxing!
-                Color pixel = getCurrentPhoto().get(x, y);
-                int average = (pixel.getRed() + pixel.getGreen() + pixel.getBlue()) / 3;    // Task 2.1 Stop boxing!
-                newPic.set(x, y, new Color(average, average, average));
+                int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
+                /**
+                 *  Bitwise calculate average without division
+                 */
+                int average = ((pixel >> 16) & 0xFF + (pixel >> 8) & 0xFF + pixel & 0xFF) / 3;
+                newPic.set(x, y, (average << 16) | (average << 8) | average); // Task 2.2 Go primitive in your arrays!
             }
         }
         pictures.add(newPic);
@@ -107,11 +110,14 @@ public class PhotoTool {
         Picture newPic = new Picture(getWidth(), getHeight());
         for (int y = 0; y < getHeight(); y++) { // Task 2.1 Stop boxing!
             for (int x = 0; x < getWidth(); x++) { // Task 2.1 Stop boxing!
-                Color pixel = getCurrentPhoto().get(x, y);
-                int red = clamp((pixel.getRed() * .393) + (pixel.getGreen() * .769) + (pixel.getBlue() * .189));
-                int green = clamp((pixel.getRed() * .349) + (pixel.getGreen() * .686) + (pixel.getBlue() * .168));
-                int blue = clamp((pixel.getRed() * .272) + (pixel.getGreen() * .534) + (pixel.getBlue() * .131));
-                newPic.set(x, y, new Color(red, green, blue));
+                int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
+                int r = (pixel >> 16) & 0xFF;
+                int g = (pixel >> 8) & 0xFF;
+                int b = pixel & 0xFF;
+                int red = clamp((r * .393) + (g * .769) + (b * .189));
+                int green = clamp((r * .349) + (g * .686) + (b * .168));
+                int blue = clamp((r * .272) + (g * .534) + (b * .131));
+                newPic.set(x, y, (red << 16) | (green << 8) | blue); // Task 2.2 Go primitive in your arrays!
             }
         }
         pictures.add(newPic);
@@ -121,13 +127,19 @@ public class PhotoTool {
      * Scale the current photo to half its size and push it on the stack.
      */
     public void half() {
-        int scaleBy = 2;
-        Picture newPic = new Picture(getWidth() / scaleBy, getHeight() / scaleBy);
-        for (int y = 0; y < getHeight() / scaleBy; y++) { // Task 2.1 Stop boxing!
-            for (int x = 0; x < getWidth() / scaleBy; x++) { // Task 2.1 Stop boxing!
-                Color pixel = getCurrentPhoto().get(x * scaleBy, y * scaleBy);
-                newPic.set(x, y, pixel);
+        final int scaleBy = 2;
+        int scaledHeight = getHeight() / scaleBy;
+        int scaledWidth = getWidth() / scaleBy;
+        Picture newPic = new Picture(scaledWidth, scaledHeight);
+        // Avoid multiplication, add scaleBy to loop index each iteration, instead
+        int y1 = 0;
+        for (int y = 0; y < getHeight(); y+=scaleBy) { // Task 2.1 Stop boxing!
+            int x1 = 0;
+            for (int x = 0; x < getWidth(); x+=scaleBy) { // Task 2.1 Stop boxing!
+                int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
+                newPic.set(x1++, y1, pixel);
             }
+            y1++;
         }
         pictures.add(newPic);
     }

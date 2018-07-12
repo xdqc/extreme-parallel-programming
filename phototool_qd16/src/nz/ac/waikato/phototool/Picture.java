@@ -22,7 +22,7 @@ import javax.swing.JLabel;
 class Picture {
 	private int width;
 	private int height;
-	private Color[][] pixels;
+	private int[][] pixels;	// Task 2.2 Go primitive in your arrays!
 
 	public Picture(String filename) {
 		BufferedImage image;
@@ -37,12 +37,12 @@ class Picture {
 		}
 		width = image.getWidth();
 		height = image.getHeight();
-		pixels = new Color[width][height];
+		pixels = new int[width][height]; // Task 2.2 Go primitive in your arrays!
 		// or int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
 		// System.out.println("rbgData length = " + pixels.length);
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				pixels[x][y] = new Color(image.getRGB(x, y));
+				pixels[x][y] = image.getRGB(x, y); // Task 2.2 Go primitive in your arrays!
 			}
 		}
 	}
@@ -50,10 +50,10 @@ class Picture {
 	public Picture(int w, int h) {
 		width = w;
 		height = h;
-		pixels = new Color[width][height];
+		pixels = new int[width][height]; // Task 2.2 Go primitive in your arrays!
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				pixels[x][y] = Color.BLACK;
+				pixels[x][y] = 0;
 			}
 		}
 	}
@@ -66,11 +66,11 @@ class Picture {
 		return height;
 	}
 
-	public Color get(int x, int y) {
-		return pixels[x][y];
+	public int get(int x, int y) {
+		return pixels[x][y]; // Task 2.2 Go primitive in your arrays!
 	}
 
-	public void set(int x, int y, Color newPixel) {
+	public void set(int x, int y, int newPixel) {
 		pixels[x][y] = newPixel;
 	}
 
@@ -78,7 +78,7 @@ class Picture {
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				image.setRGB(x, y, get(x, y).getRGB());
+				image.setRGB(x, y, get(x, y));
 			}
 		}
 		return image;
