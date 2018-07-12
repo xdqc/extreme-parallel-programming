@@ -89,8 +89,9 @@ public class PhotoTool {
      */
     public void grayscale() {
         Picture newPic = new Picture(getWidth(), getHeight());
-        for (int y = 0; y < getHeight(); y++) {         // Task 2.1 Stop boxing!
-            for (int x = 0; x < getWidth(); x++) {      // Task 2.1 Stop boxing!
+        // Task 2.3 Watch your strides! row-major loop
+        for (int x = 0; x < getWidth(); x++) {      // Task 2.1 Stop boxing!
+            for (int y = 0; y < getHeight(); y++) {         // Task 2.1 Stop boxing!
                 int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
                 // Calculate average bitwise without division
                 int average = ((((pixel >> 16) & 0xFF + (pixel >> 8) & 0xFF) >> 1) + pixel & 0xFF) >> 1;
@@ -106,8 +107,9 @@ public class PhotoTool {
      */
     public void sepia() {
         Picture newPic = new Picture(getWidth(), getHeight());
-        for (int y = 0; y < getHeight(); y++) { // Task 2.1 Stop boxing!
-            for (int x = 0; x < getWidth(); x++) { // Task 2.1 Stop boxing!
+        // Task 2.3 Watch your strides! row-major loop
+        for (int x = 0; x < getWidth(); x++) { // Task 2.1 Stop boxing!
+            for (int y = 0; y < getHeight(); y++) { // Task 2.1 Stop boxing!
                 int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
                 int r = (pixel >> 16) & 0xFF;
                 int g = (pixel >> 8) & 0xFF;
@@ -127,18 +129,17 @@ public class PhotoTool {
      */
     public void half() {
         final int scaleBy = 2;
-        int scaledHeight = getHeight() / scaleBy;
-        int scaledWidth = getWidth() / scaleBy;
-        Picture newPic = new Picture(scaledWidth, scaledHeight);
+        Picture newPic = new Picture(getWidth() / scaleBy, getHeight() / scaleBy);
+        // Task 2.3 Watch your strides! row-major loop
         // Avoid multiplication, instead, add scaleBy to loop index each iteration
-        int y1 = 0;
-        for (int y = 0; y < getHeight(); y += scaleBy) { // Task 2.1 Stop boxing!
-            int x1 = 0;
-            for (int x = 0; x < getWidth(); x += scaleBy) { // Task 2.1 Stop boxing!
+        int x1 = 0;
+        for (int x = 0; x < getWidth(); x += scaleBy) { // Task 2.1 Stop boxing!
+            int y1 = 0;
+            for (int y = 0; y < getHeight(); y += scaleBy) { // Task 2.1 Stop boxing!
                 int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
-                newPic.set(x1++, y1, pixel);
+                newPic.set(x1, y1++, pixel);
             }
-            y1++;
+            x1++;
         }
         pictures.add(newPic);
     }
@@ -264,7 +265,7 @@ public class PhotoTool {
                 //please do not move or change this time measurement statement
                 long time1 = System.nanoTime();
                 //Please do not remove or change the format of this output message
-                System.out.println("Processed " + cmds.size() + " cmds in " + (time1 - time0) / 1E9 + " secs.");
+//                System.out.println("Processed " + cmds.size() + " cmds in " + (time1 - time0) / 1E9 + " secs.");
                 if (iter > 2) {
                     totalTime += (time1 - time0);
                 }

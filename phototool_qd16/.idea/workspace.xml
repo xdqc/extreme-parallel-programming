@@ -17,7 +17,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="REPORT.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="REPORT.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/REPORT.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="418">
@@ -27,11 +27,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PhotoTool.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="PhotoTool.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/nz/ac/waikato/phototool/PhotoTool.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-367">
-              <caret line="96" column="0" lean-forward="false" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+            <state relative-caret-position="564">
+              <caret line="114" column="44" lean-forward="true" selection-start-line="114" selection-start-column="44" selection-end-line="114" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1004#1005#0" expanded="true" />
@@ -81,8 +81,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/nz/ac/waikato/phototool/Picture.java" />
-        <option value="$PROJECT_DIR$/src/nz/ac/waikato/phototool/PhotoTool.java" />
         <option value="$PROJECT_DIR$/REPORT.txt" />
+        <option value="$PROJECT_DIR$/src/nz/ac/waikato/phototool/PhotoTool.java" />
       </list>
     </option>
   </component>
@@ -514,7 +514,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15981000" />
+    <option name="totallyTimeSpent" value="16698000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
@@ -963,10 +963,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/REPORT.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/nz/ac/waikato/phototool/PhotoTool.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-367">
-          <caret line="96" column="0" lean-forward="false" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+        <state relative-caret-position="564">
+          <caret line="114" column="44" lean-forward="true" selection-start-line="114" selection-start-column="44" selection-end-line="114" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1004#1005#0" expanded="true" />
@@ -980,14 +988,6 @@
             <element signature="e#1957#1958#0" expanded="true" />
             <element signature="e#2006#2007#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/REPORT.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
