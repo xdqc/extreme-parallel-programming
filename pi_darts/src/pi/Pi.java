@@ -47,13 +47,15 @@ public class Pi {
 		int rand = seeds[gid];
 		for (int iter = 0; iter < repeats; iter++) {
 			// TODO: write this code
-            rand = 1103515245 * rand + 12345;
-            float x = ((float) (rand & 0xffffff)) / 0x1000000;
+            for (int i = 0; i < repeats; i++) {
+                rand = 1103515245 * rand + 12345;
+                float x = ((float) (rand & 0xffffff)) / 0x1000000;
 
-            rand = 1103515245 * rand + 12345;
-            float y = ((float) (rand & 0xffffff)) / 0x1000000;
+                rand = 1103515245 * rand + 12345;
+                float y = ((float) (rand & 0xffffff)) / 0x1000000;
 
-            output[iter] = x*x+y*y < 1 ? 1 : 0;
+                output[gid] += x*x+y*y < .25f ? 1 : 0;
+            }
         }
 	}
 
@@ -104,9 +106,22 @@ public class Pi {
 		// Unmap input buffers
 		memIn1.unmap(queue, a);
 
-		String srcCode = "\n" + "__kernel void throwDarts(\n"
 		// TODO: translate this from your dummyThrowDarts...
-				+ "}\n";
+		String srcCode = "__kernel void throwDarts(" +
+                "__global const int *seed," +
+                "const int repeat," +
+                "__global int *output)" +
+                "{" +
+                "   int gid = get_global_id(0);" +
+                "   int rand = seed[gid];" +
+                "   for (int i = 0; i < repeat; i++) {" +
+                "       rand = 1103515245 * rand + 12345;" +
+                "       float x = ((float) (rand & 0xffffff)) / 0x1000000;" +
+                "       rand = 1103515245 * rand + 12345;" +
+                "       float y = ((float) (rand & 0xffffff)) / 0x1000000;" +
+                "       output[gid] += x*x+y*y < 1 ? 1 : 0;" +
+                "   }" +
+                "}";
 
 		CLProgram program = context.createProgram(srcCode).build();
 		CLKernel kernel = program.createKernel("throwDarts", memIn1, repeats, memOut);
