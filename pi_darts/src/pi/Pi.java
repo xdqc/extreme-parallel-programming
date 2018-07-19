@@ -46,7 +46,6 @@ public class Pi {
 		// int gid = get_global_id(0); // this is how we get the gid in OpenCL.
 		int rand = seeds[gid];
 		for (int iter = 0; iter < repeats; iter++) {
-			// TODO: write this code
             for (int i = 0; i < repeats; i++) {
                 rand = 1103515245 * rand + 12345;
                 float x = ((float) (rand & 0xffffff)) / 0x1000000;
@@ -80,6 +79,8 @@ public class Pi {
 			for (CLDevice dev : p.listAllDevices(false)) {
 				System.out.println("  CLDevice: " + dev.getName() + " has "
 						+ dev.getMaxComputeUnits() + " compute units");
+                System.out.println("  CLDevice: " + dev.getName() + " has "
+                        + dev.getMaxWorkGroupSize() + " workgroups");
 			}
 		}
 
@@ -106,7 +107,12 @@ public class Pi {
 		// Unmap input buffers
 		memIn1.unmap(queue, a);
 
-		// TODO: translate this from your dummyThrowDarts...
+        /**
+         * Translate kernel C code from dummyThrowDarts
+         *
+         * As image objects(e.g. int repeat) are always allocated from the global address space,
+         * the __global or global qualifier should not be specified for image types.
+         */
 		String srcCode = "__kernel void throwDarts(" +
                 "__global const int *seed," +
                 "const int repeat," +
