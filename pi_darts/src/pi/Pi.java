@@ -53,7 +53,7 @@ public class Pi {
                 rand = 1103515245 * rand + 12345;
                 float y = ((float) (rand & 0xffffff)) / 0x1000000;
 
-                output[gid] += x*x+y*y < .25f ? 1 : 0;
+                output[gid] += x*x+y*y <= 1 ? 1 : 0;
             }
         }
 	}
@@ -101,8 +101,9 @@ public class Pi {
 		// Map input buffers to populate them with some data
 		Pointer<Integer> a = memIn1.map(queue, MapFlags.Write);
 		// Fill the mapped input buffers with random seeds: 0 .. threads-1
+		int seed = (int)System.currentTimeMillis() & 0x000FFFFF;
 		for (int i = 0; i < threads; i++) {
-			a.setIntAtIndex(i,i);
+			a.setIntAtIndex(i,i*seed);
 		}
 		// Unmap input buffers
 		memIn1.unmap(queue, a);
@@ -119,13 +120,14 @@ public class Pi {
                 "__global int *output)" +
                 "{" +
                 "   int gid = get_global_id(0);" +
-                "   int rand = seed[gid];" +
-                "   for (int i = 0; i < repeat; i++) {" +
+				"   int rand = seed[gid];" +
+				"	output[gid] = 0;" +
+				"   for (int i = 0; i < repeat; i++) {" +
                 "       rand = 1103515245 * rand + 12345;" +
                 "       float x = ((float) (rand & 0xffffff)) / 0x1000000;" +
                 "       rand = 1103515245 * rand + 12345;" +
                 "       float y = ((float) (rand & 0xffffff)) / 0x1000000;" +
-                "       output[gid] += x*x+y*y < 1 ? 1 : 0;" +
+                "       output[gid] += x*x+y*y <= 1 ? 1 : 0;" +
                 "   }" +
                 "}";
 

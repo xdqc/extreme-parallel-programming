@@ -90,8 +90,8 @@ public class PhotoTool {
     public void grayscale() {
         Picture newPic = new Picture(getWidth(), getHeight());
         // Task 2.3 Watch your strides! row-major loop
-        for (int x = 0; x < getWidth(); x++) {      // Task 2.1 Stop boxing!
-            for (int y = 0; y < getHeight(); y++) {         // Task 2.1 Stop boxing!
+        for (int y = 0; y < getHeight(); y++) {         // Task 2.1 Stop boxing!
+            for (int x = 0; x < getWidth(); x++) {      // Task 2.1 Stop boxing!
                 int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
                 // Calculate average bitwise without division
                 int average = ((((pixel >> 16) & 0xFF + (pixel >> 8) & 0xFF) >> 1) + pixel & 0xFF) >> 1;
@@ -108,17 +108,17 @@ public class PhotoTool {
     public void sepia() {
         Picture newPic = new Picture(getWidth(), getHeight());
         // Task 2.3 Watch your strides! row-major loop
-        for (int x = 0; x < getWidth(); x++) { // Task 2.1 Stop boxing!
-            for (int y = 0; y < getHeight(); y++) { // Task 2.1 Stop boxing!
+        for (int y = 0; y < getHeight(); y++) { // Task 2.1 Stop boxing!
+            for (int x = 0; x < getWidth(); x++) { // Task 2.1 Stop boxing!
                 int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
                 int r = (pixel >> 16) & 0xFF;
                 int g = (pixel >> 8) & 0xFF;
                 int b = pixel & 0xFF;
                 // Don't need clamp() method here.
-                int red = Math.min((int) ((r * .393) + (g * .769) + (b * .189)), 255);
-                int green = Math.min((int) ((r * .349) + (g * .686) + (b * .168)), 255);
-                int blue = Math.min((int) ((r * .272) + (g * .534) + (b * .131)), 255);
-                newPic.set(x, y, (red << 16) | (green << 8) | blue); // Task 2.2 Go primitive in your arrays!
+                int red = Math.min((int) ((r * .393f) + (g * .769f) + (b * .189f)), 255);
+                int green = Math.min((int) ((r * .349f) + (g * .686f) + (b * .168f)), 255);
+                int blue = (int) ((r * .272f) + (g * .534f) + (b * .131f));             // .272+.534+.131 < 1, so no need to clamp
+                newPic.set(x, y, (red << 16) | (green << 8) | blue);            // Task 2.2 Go primitive in your arrays!
             }
         }
         pictures.add(newPic);
@@ -129,17 +129,15 @@ public class PhotoTool {
      */
     public void half() {
         final int scaleBy = 2;
-        Picture newPic = new Picture(getWidth() / scaleBy, getHeight() / scaleBy);
+        int scaledWidth = getWidth() / scaleBy;
+        int scaledHeight = getHeight() / scaleBy;
+        Picture newPic = new Picture(scaledWidth, scaledHeight);
         // Task 2.3 Watch your strides! row-major loop
-        // Avoid multiplication, instead, add scaleBy to loop index each iteration
-        int x1 = 0;
-        for (int x = 0; x < getWidth(); x += scaleBy) { // Task 2.1 Stop boxing!
-            int y1 = 0;
-            for (int y = 0; y < getHeight(); y += scaleBy) { // Task 2.1 Stop boxing!
-                int pixel = getCurrentPhoto().get(x, y); // Task 2.2 Go primitive in your arrays!
-                newPic.set(x1, y1++, pixel);
+        for (int y = 0; y < scaledHeight; y++) { // Task 2.1 Stop boxing!
+            for (int x = 0; x < scaledWidth; x++) { // Task 2.1 Stop boxing!
+                int pixel = getCurrentPhoto().get(x * scaleBy, y * scaleBy); // Task 2.2 Go primitive in your arrays!
+                newPic.set(x, y, pixel);
             }
-            x1++;
         }
         pictures.add(newPic);
     }
@@ -237,40 +235,38 @@ public class PhotoTool {
         if (cmds.isEmpty() || photos.isEmpty()) {
             help();
         }
+
         for (String photo : photos) {
+            /**
+             * Task 1:
+             * Create PhotoTool object inside the loop, so that the memory allocation for each photo will be
+             * cleaned by GC after each loop.
+             */
             PhotoTool tool = new PhotoTool(photo);
             //Please do not remove or change the format of this output message
             System.out.println("processing " + tool.photoName + "...");
 
-            long totalTime = 0;
-            int total = 10;
             //Please remember to remove this loop when submitting it
-            for (int iter = 0; iter < total; iter++) {
-                while (tool.getStackSize() > 1) {
-                    tool.undo();
-                }
-                //do not move or change this time measurement statement
-                final long time0 = System.nanoTime();
+            while (tool.getStackSize() > 1) {
+                tool.undo();
+            }
+            //do not move or change this time measurement statement
+            final long time0 = System.nanoTime();
 
-                // Here goes the code you want to measure the speed of...
-                for (Method cmd : cmds) {
-                    try {
-                        cmd.invoke(tool);
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        System.err.println("ERROR executing command " + cmd.getName() + ": " + ex);
-                        System.exit(3);
-                    }
-                }
-
-                //please do not move or change this time measurement statement
-                long time1 = System.nanoTime();
-                //Please do not remove or change the format of this output message
-//                System.out.println("Processed " + cmds.size() + " cmds in " + (time1 - time0) / 1E9 + " secs.");
-                if (iter > 2) {
-                    totalTime += (time1 - time0);
+            // Here goes the code you want to measure the speed of...
+            for (Method cmd : cmds) {
+                try {
+                    cmd.invoke(tool);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    System.err.println("ERROR executing command " + cmd.getName() + ": " + ex);
+                    System.exit(3);
                 }
             }
-            System.out.println("Average processed " + cmds.size() + " cmds in " + (totalTime / (total - 3)) / 1E9 + " secs.");
+
+            //please do not move or change this time measurement statement
+            long time1 = System.nanoTime();
+            //Please do not remove or change the format of this output message
+            System.out.println("Processed " + cmds.size() + " cmds in " + (time1 - time0) / 1E9 + " secs.");
         }
     }
 
