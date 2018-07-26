@@ -14,6 +14,8 @@ import com.nativelibs4java.opencl.CLProgram;
 import com.nativelibs4java.opencl.CLQueue;
 import com.nativelibs4java.opencl.JavaCL;
 
+import java.util.Arrays;
+
 /**
  * Simple JavaCL example that estimates PI by firing darts at a dart board.
  *
@@ -47,15 +49,30 @@ public class Pi {
 		int rand = seeds[gid];
 		for (int iter = 0; iter < repeats; iter++) {
             for (int i = 0; i < repeats; i++) {
-                rand = 1103515245 * rand + 12345;
-                float x = ((float) (rand & 0xffffff)) / 0x1000000;
+                rand = 1103515245 * rand + 12345;	// Linear congruential generator
+                float x = ((float) (rand & 0xffffff)) / 0x1000000; //convert the resulting random integer into a floating point number between 0.0 and 1.0
 
                 rand = 1103515245 * rand + 12345;
                 float y = ((float) (rand & 0xffffff)) / 0x1000000;
 
-                output[gid] += x*x+y*y <= 1 ? 1 : 0;
+                output[gid] += x*x+y*y < 1 ? 1 : 0;
             }
         }
+	}
+
+	public static void dummyThrowDartsInt(int[] seeds, int repeats, int[] output,
+									   int gid) {
+		// int gid = get_global_id(0); // this is how we get the gid in OpenCL.
+		int rand = seeds[gid];
+		for (int iter = 0; iter < repeats; iter++) {
+			for (int i = 0; i < repeats; i++) {
+				rand = 1103515245 * rand + 12345;	// generate random integer
+				int x = rand & 0x3fff;				// make sure x or y is smaller than 0x4000, so that x*x < 0x100000000, to prevent integer over flow
+				rand = 1103515245 * rand + 12345;
+				int y = rand & 0x3fff;
+				output[gid] += x*x+y*y < 0xfff8001  ? 1 : 0;
+			}
+		}
 	}
 
 	/**
@@ -64,6 +81,14 @@ public class Pi {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+		/**
+		 * Test dummyThrowDartsInt
+		 */
+//		int[] results = new int[6];
+//		dummyThrowDartsInt(new int[] {0,1,2,3,4,5}, 1000, results, 0);
+//		System.out.println(Arrays.toString(results));
+
+
 		if (args.length != 3) {
 			System.err.println("Usage: pi threads workgroupsize repeats");
 			System.err.println("      (threads must be a multiple of workgroupsize)");
@@ -127,11 +152,35 @@ public class Pi {
                 "       float x = ((float) (rand & 0xffffff)) / 0x1000000;" +
                 "       rand = 1103515245 * rand + 12345;" +
                 "       float y = ((float) (rand & 0xffffff)) / 0x1000000;" +
-                "       output[gid] += x*x+y*y <= 1 ? 1 : 0;" +
+                "       output[gid] += x*x+y*y < 1 ? 1 : 0;" +
                 "   }" +
                 "}";
 
-		CLProgram program = context.createProgram(srcCode).build();
+		/**
+		 * Translate kernel C code from dummyThrowDartsInt
+		 *
+		 * make sure x or y is smaller than 0x4000, so that x*x < 0x10000000
+		 * to prevent positive integer overflow to become negative integer (2's complement number)
+		 */
+		String srcCodeInt = "__kernel void throwDarts(" +
+				"__global const int *seed," +
+				"const int repeat," +
+				"__global int *output)" +
+				"{" +
+				"   int gid = get_global_id(0);" +
+				"   int rand = seed[gid];" +
+				"	output[gid] = 0;" +
+				"   for (int i = 0; i < repeat; i++) {" +
+				"       rand = 1103515245 * rand + 12345;" +
+				"       int x = rand & 0x3fff;" +
+				"       rand = 1103515245 * rand + 12345;" +
+				"       int y = rand & 0x3fff;" +
+				"       output[gid] += x*x+y*y < 0xfff8001 ? 1 : 0;" +
+				"   }" +
+				"}";
+
+
+		CLProgram program = context.createProgram(srcCodeInt).build();
 		CLKernel kernel = program.createKernel("throwDarts", memIn1, repeats, memOut);
 
 		// Execute the kernel with global size = dataSize 

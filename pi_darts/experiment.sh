@@ -17,7 +17,7 @@ fi
 run(){
     echo ---- threads=${threads} wgSize=${wgSize} repeat=${repeat} ---->> result.txt
     for ((i=0;i<5;i++)); do
-        echo `java -jar classes/artifacts/pi_darts_jar/pi_darts.jar ${threads} ${wgSize} ${repeat}` | sed 's/.*Done in \([0-9]\{3,\}\).*/\1/g' >> result.txt
+        echo `java -jar ./bin/artifacts/pi_darts_jar/pi_darts.jar ${threads} ${wgSize} ${repeat}` | sed 's/.*Done in \([0-9]\{3,\}\).*/\1/g' >> result.txt
     done
     echo threads=${threads} wgSize=${wgSize} repeat=${repeat} finished
 }
@@ -30,10 +30,14 @@ question1(){
 }
 
 question2(){
+    wgSize=128
+    threads=256
+
     while ((threads <= 32768)); do
         run
         ((threads=threads*2))
     done
 }
+
 
 question2
