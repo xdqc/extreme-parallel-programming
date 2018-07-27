@@ -139,7 +139,7 @@ public class Pi {
          * As image objects(e.g. int repeat) are always allocated from the global address space,
          * the __global or global qualifier should not be specified for image types.
          */
-		String srcCode = "__kernel void throwDarts(" +
+		String throwDartsFloat = "__kernel void throwDarts(" +
                 "__global const int *seed," +
                 "const int repeat," +
                 "__global int *output)" +
@@ -162,7 +162,7 @@ public class Pi {
 		 * make sure x or y is smaller than 0x4000, so that x*x < 0x10000000
 		 * to prevent positive integer overflow to become negative integer (2's complement number)
 		 */
-		String srcCodeInt = "__kernel void throwDarts(" +
+		String throwDartsInt = "__kernel void throwDarts(" +
 				"__global const int *seed," +
 				"const int repeat," +
 				"__global int *output)" +
@@ -180,7 +180,7 @@ public class Pi {
 				"}";
 
 
-		CLProgram program = context.createProgram(srcCodeInt).build();
+		CLProgram program = context.createProgram(throwDartsFloat).build();
 		CLKernel kernel = program.createKernel("throwDarts", memIn1, repeats, memOut);
 
 		// Execute the kernel with global size = dataSize 
