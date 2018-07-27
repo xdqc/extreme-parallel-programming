@@ -15,14 +15,16 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module-library">
-      <library name="javacl-1.0-SNAPSHOT-shaded.jar">
+      <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/javacl-1.0-SNAPSHOT-shaded.jar!/" />
+          <root url="file://$MODULE_DIR$/lib" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/javacl-core-1.0-SNAPSHOT-sources.jar!/" />
+          <root url="file://$MODULE_DIR$/lib" />
         </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
   </component>

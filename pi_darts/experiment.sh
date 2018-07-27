@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-threads=25600
+threads=256000
 wgSize=2
 repeat=100000
 
@@ -40,4 +40,4 @@ question2(){
 }
 
 
-question2
+question1

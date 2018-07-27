@@ -2,7 +2,7 @@
   <artifact type="jar" name="pi_darts:jar">
     <output-path>$PROJECT_DIR$/bin/artifacts/pi_darts_jar</output-path>
     <root id="archive" name="pi_darts.jar">
-      <element id="module-output" name="pi_darts" />
+      <element id="module-output" name="pi_darts_qd16" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javacl-1.0-SNAPSHOT-shaded.jar" path-in-jar="/" />
     </root>
   </artifact>

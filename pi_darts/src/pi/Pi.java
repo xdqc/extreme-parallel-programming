@@ -29,7 +29,7 @@ import java.util.Arrays;
 public class Pi {
 
 	/**
-	 * A dummy Java-version of our kernel. This is useful so that we can test
+	 * A dummy Java-version of our kernel using float. This is useful so that we can test
 	 * and debug it in Java first.
 	 * 
 	 * @param seeds
@@ -43,14 +43,15 @@ public class Pi {
 	 *            version. (delete this parameter when you translate this to an
 	 *            OpenCL kernel).
 	 */
-	public static void dummyThrowDarts(int[] seeds, int repeats, int[] output,
+	public static void dummyThrowDartsFloat(int[] seeds, int repeats, int[] output,
 			int gid) {
 		// int gid = get_global_id(0); // this is how we get the gid in OpenCL.
 		int rand = seeds[gid];
 		for (int iter = 0; iter < repeats; iter++) {
             for (int i = 0; i < repeats; i++) {
-                rand = 1103515245 * rand + 12345;	// Linear congruential generator
-                float x = ((float) (rand & 0xffffff)) / 0x1000000; //convert the resulting random integer into a floating point number between 0.0 and 1.0
+				rand = 1103515245 * rand + 12345;				// Linear congruential generator
+				/* extract 24 bits for x */
+                float x = ((float) (rand & 0xffffff)) / 0x1000000; //convert the resulting random integer into a positive floating point number between 0.0 and 1.0 
 
                 rand = 1103515245 * rand + 12345;
                 float y = ((float) (rand & 0xffffff)) / 0x1000000;
@@ -60,17 +61,32 @@ public class Pi {
         }
 	}
 
+	/**
+	 * A dummy Java-version of our kernel using int. This is useful so that we can test
+	 * and debug it in Java first.
+	 * 
+	 * @param seeds
+	 *            one integer seed for each thread (work item).
+	 * @param repeats
+	 *            the number of darts each thread must throw.
+	 * @param output
+	 *            one integer output cell for each thread
+	 * @param gid
+	 *            dummy global id, only needed in the Java API, not the OpenCL
+	 *            version. (delete this parameter when you translate this to an
+	 *            OpenCL kernel).
+	 */
 	public static void dummyThrowDartsInt(int[] seeds, int repeats, int[] output,
 									   int gid) {
 		// int gid = get_global_id(0); // this is how we get the gid in OpenCL.
 		int rand = seeds[gid];
 		for (int iter = 0; iter < repeats; iter++) {
 			for (int i = 0; i < repeats; i++) {
-				rand = 1103515245 * rand + 12345;	// generate random integer
-				int x = rand & 0x3fff;				// make sure x or y is smaller than 0x4000, so that x*x < 0x100000000, to prevent integer over flow
+				rand = 1103515245 * rand + 12345;	// Linear congruential generator for a random integer
+				int x = rand & 0x3fff;				// make sure x is smaller than 0x4000, so that x*x < 0x10000000, to prevent integer over flow
 				rand = 1103515245 * rand + 12345;
 				int y = rand & 0x3fff;
-				output[gid] += x*x+y*y < 0xfff8001  ? 1 : 0;
+				output[gid] += x*x+y*y < 0xfff8001  ? 1 : 0;	// x*x+y*y == 0xfff8001, which is the equation of the circle centered at (0,0)
 			}
 		}
 	}
@@ -134,7 +150,7 @@ public class Pi {
 		memIn1.unmap(queue, a);
 
         /**
-         * Translate kernel C code from dummyThrowDarts
+         * Translate kernel C code from dummyThrowDartsFloat
          *
          * As image objects(e.g. int repeat) are always allocated from the global address space,
          * the __global or global qualifier should not be specified for image types.
@@ -159,7 +175,7 @@ public class Pi {
 		/**
 		 * Translate kernel C code from dummyThrowDartsInt
 		 *
-		 * make sure x or y is smaller than 0x4000, so that x*x < 0x10000000
+		 * make sure x or y is smaller than 0x4000, so that x*x < 0x1000000
 		 * to prevent positive integer overflow to become negative integer (2's complement number)
 		 */
 		String throwDartsInt = "__kernel void throwDarts(" +
@@ -206,7 +222,7 @@ public class Pi {
 		long inside = 0;
 		long total = (long) threads * repeats;
 		for (int i = 0; i < threads; i++) {
-			// System.out.println("thread i: " + i + " gives " + output.get(i));
+//			 System.out.println("thread i: " + i + " gives " + output.get(i));
 			inside += output.get(i);
 		}
 		final double pi = 4.0 * inside / total;
