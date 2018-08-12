@@ -499,16 +499,176 @@ public class Cartoonify {
             throw new IllegalArgumentException("non-square filter: " + Arrays.toString(filter));
         }
         final int filterHalf = filterSize / 2;
-        for (int filterY = 0; filterY < filterSize; filterY++) {
-            int y = wrap(yCentre + filterY - filterHalf, height);
-            for (int filterX = 0; filterX < filterSize; filterX++) {
-                int x = wrap(xCentre + filterX - filterHalf, width);
-                int rgb = pixel(x, y);
-                int filterVal = filter[filterY * filterSize + filterX];
-                sum += colourValue(rgb, colour) * filterVal;
+
+        /**
+         * Unroll the for loops
+         */
+        if (filterSize == 3) {
+            int y0 = wrap(yCentre + 0 - filterHalf, height);
+            int y1 = wrap(yCentre + 1 - filterHalf, height);
+            int y2 = wrap(yCentre + 2 - filterHalf, height);
+            int x0 = wrap(xCentre + 0 - filterHalf, width);
+            int x1 = wrap(xCentre + 1 - filterHalf, width);
+            int x2 = wrap(xCentre + 2 - filterHalf, width);
+
+            int rgb = pixel(x0, y0);
+            int filterVal = filter[0];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x1, y0);
+            filterVal = filter[1];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x2, y0);
+            filterVal = filter[2];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x0, y1);
+            filterVal = filter[3];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x1, y1);
+            filterVal = filter[4];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x2, y1);
+            filterVal = filter[5];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x0, y2);
+            filterVal = filter[6];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x1, y2);
+            filterVal = filter[7];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x2, y2);
+            filterVal = filter[8];
+            sum += colourValue(rgb, colour) * filterVal;
+        } else if (filterSize == 5) {
+            int y0 = wrap(yCentre + 0 - filterHalf, height);
+            int y1 = wrap(yCentre + 1 - filterHalf, height);
+            int y2 = wrap(yCentre + 2 - filterHalf, height);
+            int y3 = wrap(yCentre + 3 - filterHalf, height);
+            int y4 = wrap(yCentre + 4 - filterHalf, height);
+            int x0 = wrap(xCentre + 0 - filterHalf, width);
+            int x1 = wrap(xCentre + 1 - filterHalf, width);
+            int x2 = wrap(xCentre + 2 - filterHalf, width);
+            int x3 = wrap(xCentre + 3 - filterHalf, width);
+            int x4 = wrap(xCentre + 4 - filterHalf, width);
+
+            int rgb = pixel(x0, y0);
+            int filterVal = filter[0];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x1, y0);
+            filterVal = filter[1];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x2, y0);
+            filterVal = filter[2];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x3, y0);
+            filterVal = filter[3];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x4, y0);
+            filterVal = filter[4];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x0, y1);
+            filterVal = filter[5];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x1, y1);
+            filterVal = filter[6];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x2, y1);
+            filterVal = filter[7];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x3, y1);
+            filterVal = filter[8];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x4, y1);
+            filterVal = filter[9];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x0, y2);
+            filterVal = filter[10];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x1, y2);
+            filterVal = filter[11];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x2, y2);
+            filterVal = filter[12];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x3, y2);
+            filterVal = filter[13];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x4, y2);
+            filterVal = filter[14];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x0, y3);
+            filterVal = filter[15];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x1, y3);
+            filterVal = filter[16];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x2, y3);
+            filterVal = filter[17];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x3, y3);
+            filterVal = filter[18];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x4, y3);
+            filterVal = filter[19];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x0, y4);
+            filterVal = filter[20];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x1, y4);
+            filterVal = filter[21];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x2, y4);
+            filterVal = filter[22];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x3, y4);
+            filterVal = filter[23];
+            sum += colourValue(rgb, colour) * filterVal;
+
+            rgb = pixel(x4, y4);
+            filterVal = filter[24];
+            sum += colourValue(rgb, colour) * filterVal;
+        } else {
+            for (int filterY = 0; filterY < filterSize; filterY++) {
+                int y = wrap(yCentre + filterY - filterHalf, height);
+                for (int filterX = 0; filterX < filterSize; filterX++) {
+                    int x = wrap(xCentre + filterX - filterHalf, width);
+                    int rgb = pixel(x, y);
+                    int filterVal = filter[filterY * filterSize + filterX];
+                    sum += colourValue(rgb, colour) * filterVal;
+                }
             }
         }
-        // System.out.println("convolution(" + xCentre + ", " + yCentre + ") = " + sum);
+//         System.out.println("convolution(" + xCentre + ", " + yCentre + ") = " + sum);
         return sum;
     }
 

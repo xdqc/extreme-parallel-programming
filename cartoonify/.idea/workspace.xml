@@ -15,7 +15,7 @@
       <file leaf-file-name="MultipleQueue.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/opencl_examples/MultipleQueue.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1106">
+            <state relative-caret-position="741">
               <caret line="81" column="17" lean-forward="false" selection-start-line="81" selection-start-column="17" selection-end-line="81" selection-end-column="17" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -27,11 +27,27 @@
       <file leaf-file-name="Cartoonify.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/celanim/cartoonify/Cartoonify.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="749">
-              <caret line="468" column="88" lean-forward="true" selection-start-line="468" selection-start-column="88" selection-end-line="468" selection-end-column="88" />
+            <state relative-caret-position="728">
+              <caret line="565" column="34" lean-forward="true" selection-start-line="565" selection-start-column="34" selection-end-line="565" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#4478#4479#0" expanded="true" />
+                <element signature="e#4514#4515#0" expanded="true" />
+                <element signature="e#4716#4717#0" expanded="true" />
+                <element signature="e#4756#4757#0" expanded="true" />
+                <element signature="e#26282#26283#0" expanded="true" />
+                <element signature="e#26352#26353#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="clean.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/clean.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="29" lean-forward="false" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="29" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -47,6 +63,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/opencl_examples/MultipleQueue.java" />
+        <option value="$PROJECT_DIR$/clean.sh" />
         <option value="$PROJECT_DIR$/src/com/celanim/cartoonify/Cartoonify.java" />
       </list>
     </option>
@@ -107,6 +124,17 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="opencl_examples" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="cartoonify" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cartoonify" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -140,6 +168,25 @@
     </option>
   </component>
   <component name="RunManager" selected="Application.Cartoonify">
+    <configuration name="ArraySum" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="opencl_examples.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="opencl_examples.ArraySum" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="cartoonify" />
+      <envs />
+    </configuration>
     <configuration name="Cartoonify" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -158,6 +205,56 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="cartoonify" />
       <envs />
+    </configuration>
+    <configuration name="CartoonifyTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.celanim.cartoonify.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="cartoonify" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.celanim.cartoonify" />
+      <option name="MAIN_CLASS_NAME" value="com.celanim.cartoonify.CartoonifyTest" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="CartoonifyTest.testLoad" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.celanim.cartoonify.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="cartoonify" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.celanim.cartoonify" />
+      <option name="MAIN_CLASS_NAME" value="com.celanim.cartoonify.CartoonifyTest" />
+      <option name="METHOD_NAME" value="testLoad" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
     </configuration>
     <configuration name="MultipleQueue" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
@@ -259,14 +356,20 @@
       <properties />
       <listeners />
     </configuration>
-    <list size="2">
+    <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Application.MultipleQueue" />
       <item index="1" class="java.lang.String" itemvalue="Application.Cartoonify" />
+      <item index="2" class="java.lang.String" itemvalue="Application.ArraySum" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.CartoonifyTest" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.CartoonifyTest.testLoad" />
     </list>
     <recent_temporary>
-      <list size="2">
+      <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Application.Cartoonify" />
         <item index="1" class="java.lang.String" itemvalue="Application.MultipleQueue" />
+        <item index="2" class="java.lang.String" itemvalue="Application.ArraySum" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.CartoonifyTest.testLoad" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.CartoonifyTest" />
       </list>
     </recent_temporary>
   </component>
@@ -280,15 +383,27 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1534075117116</updated>
-      <workItem from="1534075120169" duration="1875000" />
+      <workItem from="1534075120169" duration="6445000" />
     </task>
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="CartoonifyTest - 2018.08.13 at 00h 32m 39s.xml">
+      <configuration name="CartoonifyTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CartoonifyTest - 2018.08.13 at 00h 32m 55s.xml">
+      <configuration name="CartoonifyTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CartoonifyTest_testLoad - 2018.08.13 at 00h 32m 59s.xml">
+      <configuration name="CartoonifyTest.testLoad" configurationId="JUnit" />
+    </history-entry>
+  </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1875000" />
+    <option name="totallyTimeSpent" value="6445000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -331,16 +446,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/opencl_examples/MultipleQueue.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1106">
-          <caret line="81" column="17" lean-forward="false" selection-start-line="81" selection-start-column="17" selection-end-line="81" selection-end-column="17" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test_edges.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -371,14 +476,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/clean.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/img_bumblebee_blurred.jpg">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -399,12 +496,52 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/celanim/cartoonify/Cartoonify.java">
+    <entry file="file://$PROJECT_DIR$/test/com/celanim/cartoonify/CartoonifyTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="749">
-          <caret line="468" column="88" lean-forward="true" selection-start-line="468" selection-start-column="88" selection-end-line="468" selection-end-column="88" />
+        <state relative-caret-position="68">
+          <caret line="11" column="13" lean-forward="false" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/opencl_examples/ArraySum.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="21" column="13" lean-forward="false" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/opencl_examples/MultipleQueue.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="741">
+          <caret line="81" column="17" lean-forward="false" selection-start-line="81" selection-start-column="17" selection-end-line="81" selection-end-column="17" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/clean.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="29" lean-forward="false" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/celanim/cartoonify/Cartoonify.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="728">
+          <caret line="565" column="34" lean-forward="true" selection-start-line="565" selection-start-column="34" selection-end-line="565" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#4478#4479#0" expanded="true" />
+            <element signature="e#4514#4515#0" expanded="true" />
+            <element signature="e#4716#4717#0" expanded="true" />
+            <element signature="e#4756#4757#0" expanded="true" />
+            <element signature="e#26282#26283#0" expanded="true" />
+            <element signature="e#26352#26353#0" expanded="true" />
           </folding>
         </state>
       </provider>
