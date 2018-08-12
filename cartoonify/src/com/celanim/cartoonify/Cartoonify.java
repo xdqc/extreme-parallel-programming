@@ -1,5 +1,8 @@
 package com.celanim.cartoonify;
 
+import com.nativelibs4java.opencl.*;
+import org.bridj.Pointer;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -92,6 +95,84 @@ public class Cartoonify {
      * The position of the current image in the pixels array. -1 means no current image.
      */
     private int currImage;
+
+    /**
+     * Choose the platform and the best GPU device
+     */
+    private CLContext context = JavaCL.createBestContext(CLPlatform.DeviceFeature.GPU);
+
+    /**
+     * OpenCL kernel to calculate Gaussian Blur and Sobel Edge Detect
+     */
+    private static final String source =
+            "int wrap(int pos, int size) {\n" +
+                    "    return select(0, select(pos, size - 1 ,pos < size), pos < 0);\n" +
+                    "}\n" +
+                    "\n" +
+                    "int3 pixel (int p) {\n" +
+                    "    return (int3)((p>>16) & 0xFF, (p>>8) & 0xFF, p & 0xFF);\n" +
+                    "}\n" +
+                    "\n" +
+                    "__kernel void gaussianBlur\n" +
+                    "(__global int *a, __global int *b,int width, int height)\n" +
+                    "{\n" +
+                    "    int gid = get_global_id(0);\n" +
+                    "\n" +
+                    "    int yCentre = gid / width;\n" +
+                    "    int xCentre = gid % width;\n" +
+                    "\n" +
+                    "    int y0 = wrap(yCentre - 2, height);\n" +
+                    "    int y1 = wrap(yCentre - 1, height);\n" +
+                    "    int y2 = wrap(yCentre, height);\n" +
+                    "    int y3 = wrap(yCentre + 1, height);\n" +
+                    "    int y4 = wrap(yCentre + 2, height);\n" +
+                    "    int x0 = wrap(xCentre - 2, width);\n" +
+                    "    int x1 = wrap(xCentre - 1, width);\n" +
+                    "    int x2 = wrap(xCentre, width);\n" +
+                    "    int x3 = wrap(xCentre + 1, width);\n" +
+                    "    int x4 = wrap(xCentre + 2, width);\n" +
+                    "\n" +
+                    "    int3 sum =\n" +
+                    "    pixel(a[y0*width + x0]) * 2 + pixel(a[y0*width + x1]) * 4 + pixel(a[y0*width + x2]) * 5 + pixel(a[y0*width + x3]) * 4 + pixel(a[y0*width + x4]) * 2 +\n" +
+                    "    pixel(a[y1*width + x0]) * 4 + pixel(a[y1*width + x1]) * 9 + pixel(a[y1*width + x2]) *12 + pixel(a[y1*width + x3]) * 9 + pixel(a[y1*width + x4]) * 4 +\n" +
+                    "    pixel(a[y2*width + x0]) * 5 + pixel(a[y2*width + x1]) *12 + pixel(a[y2*width + x2]) *15 + pixel(a[y2*width + x3]) *12 + pixel(a[y2*width + x4]) * 5 +\n" +
+                    "    pixel(a[y3*width + x0]) * 4 + pixel(a[y3*width + x1]) * 9 + pixel(a[y3*width + x2]) *12 + pixel(a[y3*width + x3]) * 9 + pixel(a[y3*width + x4]) * 4 +\n" +
+                    "    pixel(a[y4*width + x0]) * 2 + pixel(a[y4*width + x1]) * 4 + pixel(a[y4*width + x2]) * 5 + pixel(a[y4*width + x3]) * 4 + pixel(a[y4*width + x4]) * 2;\n" +
+                    "\n" +
+                    "    sum = sum/159;\n" +
+                    "\n" +
+                    "    b[gid] = (sum.x<<16) + (sum.y<<8) + sum.z;\n" +
+                    "}\n" +
+                    "\n" +
+                    "__kernel void sobelEdgeDetect\n" +
+                    "(__global int *b, __global int *c,int width, int height, int edgeThreshold)\n" +
+                    "{\n" +
+                    "    int gid = get_global_id(0);\n" +
+                    "\n" +
+                    "    int yCentre = gid / width;\n" +
+                    "    int xCentre = gid % width;\n" +
+                    "\n" +
+                    "    int y0 = wrap(yCentre - 1, height);\n" +
+                    "    int y1 = wrap(yCentre, height);\n" +
+                    "    int y2 = wrap(yCentre + 1, height);\n" +
+                    "    int x0 = wrap(xCentre - 1, width);\n" +
+                    "    int x1 = wrap(xCentre, width);\n" +
+                    "    int x2 = wrap(xCentre + 1, width);\n" +
+                    "\n" +
+                    "    int3 sumV = 0\n" +
+                    "    - pixel(b[y0*width + x0]) + pixel(b[y0*width + x2])\n" +
+                    "    - pixel(b[y1*width + x0]) * 2 + pixel(b[y1*width + x2]) * 2\n" +
+                    "    - pixel(b[y2*width + x0]) + pixel(b[y2*width + x2]);\n" +
+                    "\n" +
+                    "    int3 sumH = 0\n" +
+                    "    + pixel(b[y0*width + x0]) + pixel(b[y0*width + x1]) * 2 + pixel(b[y0*width + x2])\n" +
+                    "    - pixel(b[y2*width + x0]) - pixel(b[y2*width + x1]) * 2 - pixel(b[y2*width + x2]);\n" +
+                    "\n" +
+                    "    int gV = abs(sumV.x) + abs(sumV.y) + abs(sumV.z);\n" +
+                    "    int gH = abs(sumH.x) + abs(sumH.y) + abs(sumH.z);\n" +
+                    "\n" +
+                    "    c[gid] = select(0xFFFFFF, 0,(gV+gH)>= edgeThreshold);\n" +
+                    "}";
 
     /**
      * Create a new photo-to-cartoon processor.
@@ -330,6 +411,7 @@ public class Cartoonify {
         }
     }
 
+
     public static final int[] SOBEL_VERTICAL_FILTER = {
             -1, 0, +1,
             -2, 0, +2,
@@ -501,162 +583,128 @@ public class Cartoonify {
         final int filterHalf = filterSize / 2;
 
         /**
-         * Unroll the for loops
+         * Unroll the for-loops
          */
         if (filterSize == 3) {
-            int y0 = wrap(yCentre + 0 - filterHalf, height);
-            int y1 = wrap(yCentre + 1 - filterHalf, height);
-            int y2 = wrap(yCentre + 2 - filterHalf, height);
-            int x0 = wrap(xCentre + 0 - filterHalf, width);
-            int x1 = wrap(xCentre + 1 - filterHalf, width);
-            int x2 = wrap(xCentre + 2 - filterHalf, width);
+            int y0 = wrap(yCentre - 1, height);
+            int y1 = wrap(yCentre, height);
+            int y2 = wrap(yCentre + 1, height);
+            int x0 = wrap(xCentre - 1, width);
+            int x1 = wrap(xCentre, width);
+            int x2 = wrap(xCentre + 1, width);
 
             int rgb = pixel(x0, y0);
-            int filterVal = filter[0];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[0];
 
             rgb = pixel(x1, y0);
-            filterVal = filter[1];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[1];
 
             rgb = pixel(x2, y0);
-            filterVal = filter[2];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[2];
 
             rgb = pixel(x0, y1);
-            filterVal = filter[3];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[3];
 
             rgb = pixel(x1, y1);
-            filterVal = filter[4];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[4];
 
             rgb = pixel(x2, y1);
-            filterVal = filter[5];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[5];
 
             rgb = pixel(x0, y2);
-            filterVal = filter[6];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[6];
 
             rgb = pixel(x1, y2);
-            filterVal = filter[7];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[7];
 
             rgb = pixel(x2, y2);
-            filterVal = filter[8];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[8];
         } else if (filterSize == 5) {
-            int y0 = wrap(yCentre + 0 - filterHalf, height);
-            int y1 = wrap(yCentre + 1 - filterHalf, height);
-            int y2 = wrap(yCentre + 2 - filterHalf, height);
-            int y3 = wrap(yCentre + 3 - filterHalf, height);
-            int y4 = wrap(yCentre + 4 - filterHalf, height);
-            int x0 = wrap(xCentre + 0 - filterHalf, width);
-            int x1 = wrap(xCentre + 1 - filterHalf, width);
-            int x2 = wrap(xCentre + 2 - filterHalf, width);
-            int x3 = wrap(xCentre + 3 - filterHalf, width);
-            int x4 = wrap(xCentre + 4 - filterHalf, width);
+            int y0 = wrap(yCentre - 2, height);
+            int y1 = wrap(yCentre - 1, height);
+            int y2 = wrap(yCentre, height);
+            int y3 = wrap(yCentre + 1, height);
+            int y4 = wrap(yCentre + 2, height);
+            int x0 = wrap(xCentre - 2, width);
+            int x1 = wrap(xCentre - 1, width);
+            int x2 = wrap(xCentre, width);
+            int x3 = wrap(xCentre + 1, width);
+            int x4 = wrap(xCentre + 2, width);
 
             int rgb = pixel(x0, y0);
-            int filterVal = filter[0];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[0];
 
             rgb = pixel(x1, y0);
-            filterVal = filter[1];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[1];
 
             rgb = pixel(x2, y0);
-            filterVal = filter[2];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[2];
 
             rgb = pixel(x3, y0);
-            filterVal = filter[3];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[3];
 
             rgb = pixel(x4, y0);
-            filterVal = filter[4];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[4];
 
             rgb = pixel(x0, y1);
-            filterVal = filter[5];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[5];
 
             rgb = pixel(x1, y1);
-            filterVal = filter[6];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[6];
 
             rgb = pixel(x2, y1);
-            filterVal = filter[7];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[7];
 
             rgb = pixel(x3, y1);
-            filterVal = filter[8];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[8];
 
             rgb = pixel(x4, y1);
-            filterVal = filter[9];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[9];
 
             rgb = pixel(x0, y2);
-            filterVal = filter[10];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[10];
 
             rgb = pixel(x1, y2);
-            filterVal = filter[11];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[11];
 
             rgb = pixel(x2, y2);
-            filterVal = filter[12];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[12];
 
             rgb = pixel(x3, y2);
-            filterVal = filter[13];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[13];
 
             rgb = pixel(x4, y2);
-            filterVal = filter[14];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[14];
 
             rgb = pixel(x0, y3);
-            filterVal = filter[15];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[15];
 
             rgb = pixel(x1, y3);
-            filterVal = filter[16];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[16];
 
             rgb = pixel(x2, y3);
-            filterVal = filter[17];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[17];
 
             rgb = pixel(x3, y3);
-            filterVal = filter[18];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[18];
 
             rgb = pixel(x4, y3);
-            filterVal = filter[19];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[19];
 
             rgb = pixel(x0, y4);
-            filterVal = filter[20];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[20];
 
             rgb = pixel(x1, y4);
-            filterVal = filter[21];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[21];
 
             rgb = pixel(x2, y4);
-            filterVal = filter[22];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[22];
 
             rgb = pixel(x3, y4);
-            filterVal = filter[23];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[23];
 
             rgb = pixel(x4, y4);
-            filterVal = filter[24];
-            sum += colourValue(rgb, colour) * filterVal;
+            sum += colourValue(rgb, colour) * filter[24];
         } else {
             for (int filterY = 0; filterY < filterSize; filterY++) {
                 int y = wrap(yCentre + filterY - filterHalf, height);
@@ -685,14 +733,20 @@ public class Cartoonify {
      * @return the new index, which is in the range <code>0 .. size-1</code>.
      */
     public int wrap(int pos, int size) {
-        if (pos < 0) {
-            pos = -1 - pos;
-        } else if (pos >= size) {
-            pos = (size - 1) - (pos - size);
-        }
-        assert 0 <= pos;
-        assert pos < size;
-        return pos;
+        /*Original implementation*/
+//        if (pos < 0) {
+//            pos = -1 - pos;
+//        } else if (pos >= size) {
+//            pos = (size - 1) - (pos - size);
+//        }
+//        assert 0 <= pos;
+//        assert pos < size;
+//        return pos;
+
+        /**
+         * Alternative wrap method
+         */
+        return pos < 0 ? 0 : pos >= size ? size - 1 : pos;
     }
 
     /**
@@ -702,7 +756,8 @@ public class Cartoonify {
      * @return an integer colour value, in the range <code>0 .. COLOUR_MASK</code>.
      */
     public int clamp(double value) {
-        int result = (int) (value + 0.5); // round to nearest integer
+//        int result = (int) (value + 0.5); // round to nearest integer
+        int result = (int)value;
         if (result <= 0) {
             return 0;
         } else if (result > COLOUR_MASK) {
@@ -834,9 +889,73 @@ public class Cartoonify {
      * Implement this method to process one input photo on GPU or GPU and CPU
      */
     protected void processPhotoOpenCL() {
-
+        gaussianBlur_sobelEdgeDetect_OpenCL();
+        int edgeMask = numImages() - 1;
+        // now convert the original image into a few discrete colours
+        cloneImage(0);
+        reduceColours();
+        mergeMask(edgeMask, white, -1);
 
     }
+
+    /**
+     *
+     */
+    private void gaussianBlur_sobelEdgeDetect_OpenCL() {
+        long startBlur = System.currentTimeMillis();
+
+        final int length = width * height;
+        final int workgroupsize = 64; //the preferred group size multiple on my machine
+
+        //Create an OpenCL queue on the first device of this context.
+        CLQueue queue1 = context.createDefaultQueue();
+        CLQueue queue2 = context.createDefaultQueue();
+
+        // Allocate OpenCL-hosted memory
+        CLBuffer<Integer> memIn = context.createIntBuffer(CLMem.Usage.Input, length);
+        CLBuffer<Integer> memInOut = context.createIntBuffer(CLMem.Usage.InputOutput, length);
+        CLBuffer<Integer> memOut = context.createIntBuffer(CLMem.Usage.Output, length);
+
+
+        // Map input buffers to populate them with some data
+        Pointer<Integer> a = memIn.map(queue1, CLMem.MapFlags.Write);
+
+        //Fill the arrays with image
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                a.setIntAtIndex(y * width + x, pixel(x, y));
+            }
+        }
+
+        //Unmap input buffers
+        memIn.unmap(queue1, a);
+
+        CLProgram program = context.createProgram(source).build();
+        CLKernel blurKernel = program.createKernel("gaussianBlur", memIn, memInOut, width, height);
+        CLKernel edgeKernel = program.createKernel("sobelEdgeDetect", memInOut, memOut, width, height, edgeThreshold);
+
+        CLEvent blurEvent = blurKernel.enqueueNDRange(queue1, new int[]{length}, new int[]{workgroupsize});
+        CLEvent edgeEvent = edgeKernel.enqueueNDRange(queue2, new int[]{length}, new int[]{workgroupsize}, blurEvent);
+
+        //Execution begins when the user executes a synchronizing command,
+        queue2.flush();
+        queue1.flush();
+
+        // Wait for all operations to be performed
+        queue1.finish();
+        queue2.finish();
+
+        Pointer<Integer> output1 = memInOut.read(queue1);
+        Pointer<Integer> output2 = memOut.read(queue2);
+
+        pushImage(output1.getInts());
+        pushImage(output2.getInts());
+        long endBlur = System.currentTimeMillis();
+        if (debug) {
+            System.out.println("  gaussian blurring and sobel Edge Detect took " + (endBlur - startBlur) / 1e3 + " secs.");
+        }
+    }
+
 
     /**
      * Process one input photo step-by-step on CPU

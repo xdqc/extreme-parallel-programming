@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="cartoonify:jar">
+    <output-path>$PROJECT_DIR$/bin/artifacts/cartoonify_jar</output-path>
+    <root id="archive" name="cartoonify.jar">
+      <element id="module-output" name="cartoonify" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javacl-1.0-SNAPSHOT-shaded.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javacl-core-1.0-SNAPSHOT-sources.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
