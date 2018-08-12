@@ -53,5 +53,6 @@ fabric.properties
 
 .settings/
 *.jpg
+*.png
 **/*.txt
 phototool_qd16/REPORT.txt
