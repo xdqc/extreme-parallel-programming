@@ -22,16 +22,16 @@
           <file leaf-file-name="Cartoonify.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/com/celanim/cartoonify/Cartoonify.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="190">
-                  <caret line="149" column="54" lean-forward="true" selection-start-line="149" selection-start-column="54" selection-end-line="149" selection-end-column="54" />
+                <state relative-caret-position="47">
+                  <caret line="908" column="52" lean-forward="false" selection-start-line="908" selection-start-column="52" selection-end-line="908" selection-end-column="52" />
                   <folding>
                     <element signature="imports" expanded="true" />
-                    <element signature="e#9182#9183#0" expanded="true" />
-                    <element signature="e#9218#9219#0" expanded="true" />
-                    <element signature="e#9420#9421#0" expanded="true" />
-                    <element signature="e#9460#9461#0" expanded="true" />
-                    <element signature="e#29771#29772#0" expanded="true" />
-                    <element signature="e#29841#29842#0" expanded="true" />
+                    <element signature="e#9183#9184#0" expanded="true" />
+                    <element signature="e#9219#9220#0" expanded="true" />
+                    <element signature="e#9421#9422#0" expanded="true" />
+                    <element signature="e#9461#9462#0" expanded="true" />
+                    <element signature="e#29772#29773#0" expanded="true" />
+                    <element signature="e#29842#29843#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -41,7 +41,7 @@
             <entry file="file://$PROJECT_DIR$/clean.sh">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="68">
-                  <caret line="4" column="112" lean-forward="true" selection-start-line="4" selection-start-column="112" selection-end-line="4" selection-end-column="112" />
+                  <caret line="4" column="112" lean-forward="false" selection-start-line="4" selection-start-column="112" selection-end-line="4" selection-end-column="112" />
                   <folding />
                 </state>
               </provider>
@@ -54,12 +54,12 @@
           <file leaf-file-name="Cartoonify.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/com/celanim/cartoonify/Cartoonify.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="6339">
-                  <caret line="748" column="58" lean-forward="true" selection-start-line="748" selection-start-column="58" selection-end-line="748" selection-end-column="58" />
+                <state relative-caret-position="695">
+                  <caret line="419" column="0" lean-forward="true" selection-start-line="419" selection-start-column="0" selection-end-line="419" selection-end-column="0" />
                   <folding>
                     <element signature="imports" expanded="true" />
-                    <element signature="e#29771#29772#0" expanded="true" />
-                    <element signature="e#29841#29842#0" expanded="true" />
+                    <element signature="e#29772#29773#0" expanded="true" />
+                    <element signature="e#29842#29843#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -128,6 +128,51 @@
             <path>
               <item name="cartoonify" type="b2602c69:ProjectViewProjectNode" />
               <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cartoonify" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
+              <item name="artifacts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cartoonify" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
+              <item name="artifacts" type="462c0819:PsiDirectoryNode" />
+              <item name="cartoonify_jar" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cartoonify" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cartoonify" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="celanim" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cartoonify" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="celanim" type="462c0819:PsiDirectoryNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cartoonify" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
+              <item name="META-INF" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cartoonify" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cartoonify" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -160,6 +205,10 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src" />
+    <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
+    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
+    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
+    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="cartoonify" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -173,7 +222,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.CartoonifyTest">
+  <component name="RunManager" selected="Application.Cartoonify">
     <configuration name="Cartoonify" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -182,8 +231,8 @@
         </pattern>
       </extension>
       <option name="MAIN_CLASS_NAME" value="com.celanim.cartoonify.Cartoonify" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="-g -e 256 -c 3 img_bucket.jpg img_bumblebee.jpg img_dog.jpg img_pavlova.jpg img_shenzhen.jpg img_sunflower.jpg img_surfers.jpg" />
+      <option name="VM_PARAMETERS" value="-Xmx12G" />
+      <option name="PROGRAM_PARAMETERS" value="-g -d -e 256 -c 3 img_world.jpg" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -377,8 +426,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.CartoonifyTest" />
-        <item index="1" class="java.lang.String" itemvalue="Application.Cartoonify" />
+        <item index="0" class="java.lang.String" itemvalue="Application.Cartoonify" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.CartoonifyTest" />
         <item index="2" class="java.lang.String" itemvalue="Application.MultipleQueue" />
         <item index="3" class="java.lang.String" itemvalue="JUnit.CartoonifyTest.testWrap" />
         <item index="4" class="java.lang.String" itemvalue="JUnit.CartoonifyTest.testStack" />
@@ -395,7 +444,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1534075117116</updated>
-      <workItem from="1534075120169" duration="32969000" />
+      <workItem from="1534075120169" duration="40426000" />
     </task>
     <servers />
   </component>
@@ -432,7 +481,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="32969000" />
+    <option name="totallyTimeSpent" value="40426000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
@@ -447,7 +496,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27664578" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21708465" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -602,23 +651,44 @@
     <entry file="file://$PROJECT_DIR$/clean.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="4" column="112" lean-forward="true" selection-start-line="4" selection-start-column="112" selection-end-line="4" selection-end-column="112" />
+          <caret line="4" column="112" lean-forward="false" selection-start-line="4" selection-start-column="112" selection-end-line="4" selection-end-column="112" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="uml://JAVA/com.celanim.cartoonify.Cartoonify">
+      <provider selected="true" editor-type-id="UmlEditorProvider">
+        <state>
+          <ID>JAVA</ID>
+          <OriginalElement>com.celanim.cartoonify.Cartoonify</OriginalElement>
+          <nodes>
+            <node x="" y="">com.celanim.cartoonify.Cartoonify</node>
+          </nodes>
+          <notes />
+          <edges />
+          <settings layout="Hierarchic Group" zoom="0.6829588014981274" x="107.31176309295302" y="480.3783931998903" />
+          <SelectedNodes />
+          <Categories>
+            <Category>Methods</Category>
+            <Category>Constructors</Category>
+          </Categories>
+          <SCOPE>All</SCOPE>
+          <VISIBILITY>private</VISIBILITY>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/celanim/cartoonify/Cartoonify.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="149" column="54" lean-forward="true" selection-start-line="149" selection-start-column="54" selection-end-line="149" selection-end-column="54" />
+        <state relative-caret-position="47">
+          <caret line="908" column="52" lean-forward="false" selection-start-line="908" selection-start-column="52" selection-end-line="908" selection-end-column="52" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#9182#9183#0" expanded="true" />
-            <element signature="e#9218#9219#0" expanded="true" />
-            <element signature="e#9420#9421#0" expanded="true" />
-            <element signature="e#9460#9461#0" expanded="true" />
-            <element signature="e#29771#29772#0" expanded="true" />
-            <element signature="e#29841#29842#0" expanded="true" />
+            <element signature="e#9183#9184#0" expanded="true" />
+            <element signature="e#9219#9220#0" expanded="true" />
+            <element signature="e#9421#9422#0" expanded="true" />
+            <element signature="e#9461#9462#0" expanded="true" />
+            <element signature="e#29772#29773#0" expanded="true" />
+            <element signature="e#29842#29843#0" expanded="true" />
           </folding>
         </state>
       </provider>

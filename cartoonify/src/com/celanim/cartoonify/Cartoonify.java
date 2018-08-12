@@ -106,7 +106,7 @@ public class Cartoonify {
      */
     private static final String source =
             "int wrap(int pos, int size) {\n" +
-                    "    return select(0, select(pos, size - 1 ,pos < size), pos < 0);\n" +
+                    "    return select(0, select(pos, size - 1 ,pos >= size), pos > 0);\n" +
                     "}\n" +
                     "\n" +
                     "int3 pixel (int p) {\n" +
@@ -895,11 +895,15 @@ public class Cartoonify {
         cloneImage(0);
         reduceColours();
         mergeMask(edgeMask, white, -1);
-
     }
 
     /**
+     * GPU version:
      *
+     *  Adds one new image that is a blurred version of the current image.
+     *
+     *  Detects edges in the current image and adds an image where black pixels
+     *  mark the edges and the other pixels are all white.
      */
     private void gaussianBlur_sobelEdgeDetect_OpenCL() {
         long startBlur = System.currentTimeMillis();
