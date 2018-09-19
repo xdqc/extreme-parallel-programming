@@ -57,3 +57,7 @@ fabric.properties
 *.png
 **/*.txt
 phototool_qd16/REPORT.txt
+**/output
+invertedindex/input/CORESS_1
+1334454_completablefuture_assignment.zip
+completablefuture_assignment/fullnames
