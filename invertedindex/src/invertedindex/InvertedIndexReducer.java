@@ -52,7 +52,7 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
     }
 
     /**
-     * Tuple2<Integer, Integer> as comparable element of TreeSet
+     * A Tuple2<Integer, Integer> as comparable element of TreeSet
      */
     private class SentencePosition implements Comparable<SentencePosition> {
         final int lineId;

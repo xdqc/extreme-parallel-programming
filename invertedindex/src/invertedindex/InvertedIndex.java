@@ -25,6 +25,7 @@ public class InvertedIndex extends Configured implements Tool {
 
         job.setMapperClass(InvertedIndexMapper.class);
         job.setCombinerClass(InvertedIndexCombiner.class);
+        job.setSortComparatorClass(InvertedIndexComparator.class);
         job.setReducerClass(InvertedIndexReducer.class);
         job.setNumReduceTasks(numReduces);
 
