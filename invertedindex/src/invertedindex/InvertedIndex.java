@@ -8,10 +8,15 @@ import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 
-public class InvertedIndex extends Configured implements Tool {
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
+public class InvertedIndex extends Configured implements Tool {
+    private static int numReduces = 8;
     public int run(String[] args) throws Exception {
         Configuration conf = new Configuration();
+        conf.setStrings("stopwords", Files.readAllLines(Paths.get("stopwords_google.txt")).toArray(new String[0]));
+
         Job job = Job.getInstance(conf,"word count");
         job.setJarByClass(InvertedIndex.class);
 
@@ -19,8 +24,9 @@ public class InvertedIndex extends Configured implements Tool {
         job.setOutputValueClass(IntArrayWritable.class);
 
         job.setMapperClass(InvertedIndexMapper.class);
+        job.setCombinerClass(InvertedIndexCombiner.class);
         job.setReducerClass(InvertedIndexReducer.class);
-        job.setNumReduceTasks(8);
+        job.setNumReduceTasks(numReduces);
 
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
@@ -35,9 +41,12 @@ public class InvertedIndex extends Configured implements Tool {
     public static void main(String[] args) throws Exception {
         final int result;
         if (args.length < 2) {
-            System.out.println("Arguments: inputDirectory outputDirectory");
+            System.out.println("Arguments: inputDirectory outputDirectory numReducer");
             result = -1;
         } else {
+            // We convert args[2] to number of reducers
+
+
             result = ToolRunner.run(new InvertedIndex(), args);
         }
         System.exit(result);

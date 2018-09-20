@@ -16,4 +16,10 @@ public class IntArrayWritable extends ArrayWritable {
         set(intWritables);
     }
 
+    public IntArrayWritable(int value) {
+        super(IntWritable.class);
+
+        IntWritable[] intWritables = new IntWritable[]{ new IntWritable(value) };
+        set(intWritables);
+    }
 }

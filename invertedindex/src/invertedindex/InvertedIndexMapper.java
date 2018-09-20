@@ -1,12 +1,13 @@
 package invertedindex;
 
-import org.apache.hadoop.io.ArrayWritable;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 
 public class InvertedIndexMapper extends Mapper<LongWritable, Text, Text, IntArrayWritable> {
@@ -16,8 +17,15 @@ public class InvertedIndexMapper extends Mapper<LongWritable, Text, Text, IntArr
     private int lineId = 0;
     private int sentencePosition = 0;
 
+    // Use HashSet for fast search
+    private static HashSet<String> stopwords = new HashSet<>();
+
+
     public void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
+        Configuration conf = context.getConfiguration();
+
+        stopwords.addAll(Arrays.asList(conf.getStrings("stopwords")));
 
         String line = value.toString();
         lineId++;
@@ -31,7 +39,13 @@ public class InvertedIndexMapper extends Mapper<LongWritable, Text, Text, IntArr
 
         StringTokenizer tokenizer = new StringTokenizer(line);
         while (tokenizer.hasMoreTokens()) {
-            word.set(tokenizer.nextToken());
+            String token = tokenizer.nextToken();
+            // Skip stopwords
+            if (stopwords.contains(token)){
+                continue;
+            }
+
+            word.set(token);
             context.write(word, new IntArrayWritable(new int[]{documentId, lineId, sentencePosition}));
             sentencePosition++;
         }

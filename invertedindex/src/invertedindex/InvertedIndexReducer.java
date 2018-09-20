@@ -5,9 +5,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, IntWritable> {
     private int documentId = 0;
@@ -17,7 +16,8 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
     public void reduce(Text key, Iterable<IntArrayWritable> values,
                        Context context) throws IOException, InterruptedException {
 
-        TreeMap<Integer, ArrayList<int[]>> documentCount = new TreeMap<>();
+        // Use TreeMap & TreeSet to keep the order of documentId and lindId
+        TreeMap<Integer, TreeSet<SentencePosition>> documentCount = new TreeMap<>();
 
         int sum = 0;
         for (IntArrayWritable x : values) {
@@ -27,11 +27,11 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
             sum++;
 
             if (documentCount.containsKey(documentId)){
-                ArrayList<int[]> line = documentCount.get(documentId);
-                line.add(new int[]{lineId, sentencePosition});
+                TreeSet<SentencePosition> line = documentCount.get(documentId);
+                line.add(new SentencePosition(lineId, sentencePosition));
             } else {
-                ArrayList<int[]> line = new ArrayList<>();
-                line.add(new int[]{lineId, sentencePosition});
+                TreeSet<SentencePosition> line = new TreeSet<>();
+                line.add(new SentencePosition(lineId, sentencePosition));
                 documentCount.put(documentId, line);
             }
         }
@@ -40,16 +40,32 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
         for (int docId: documentCount.keySet()) {
             Text text = new Text();
             text.set("\t"+String.valueOf(docId));
-            ArrayList<int[]> lines = documentCount.get(docId);
+            TreeSet<SentencePosition> lines = documentCount.get(docId);
             context.write(text, new IntWritable(lines.size()));
 
-            lines.sort(Comparator.comparingInt(o -> o[0]));
-
-            for (int[] pos : lines) {
+            for (SentencePosition pos : lines) {
                 Text tx = new Text();
-                tx.set("\t\t"+String.valueOf(pos[0]));
-                context.write(tx, new IntWritable(pos[1]));
+                tx.set("\t\t"+String.valueOf(pos.lineId));
+                context.write(tx, new IntWritable(pos.wordPos));
             }
+        }
+    }
+
+    /**
+     * Tuple2<Integer, Integer> as comparable element of TreeSet
+     */
+    private class SentencePosition implements Comparable<SentencePosition> {
+        final int lineId;
+        final int wordPos;
+
+        public SentencePosition(int x, int y) {
+            this.lineId = x;
+            this.wordPos = y;
+        }
+
+        @Override
+        public int compareTo(SentencePosition o) {
+            return Integer.compare(this.lineId, o.lineId);
         }
     }
 }
