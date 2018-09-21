@@ -50,7 +50,6 @@ public class InvertedIndexMapper extends Mapper<LongWritable, Text, Text, IntArr
             word.set(token);
             context.write(word, new IntArrayWritable(new int[]{documentId, lineId, sentencePosition}));
             sentencePosition++;
-
         }
     }
 }

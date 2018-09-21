@@ -11,19 +11,19 @@ import org.apache.hadoop.io.Text;
  */
 public class InvertedIndexPartitioner extends Partitioner<Text, IntArrayWritable> {
 
-    private final int MAX_LENGTH = 31;
+    // maximum length of words
+    private final int MAX_LENGTH = 30;
 
     /**
      * Get partition of a given key
      *
      * @param text the key
-     * @param intArrayWritable output of Mapper
+     * @param intArrayWritable the output of Mapper
      * @param numPartitions same as number of reducers
-     * @return partition id of the key
+     * @return partition index
      */
     @Override
     public int getPartition(Text text, IntArrayWritable intArrayWritable, int numPartitions) {
-        int length = text.getLength();
-        return (int)Math.floor(length * numPartitions / (double)MAX_LENGTH);
+        return (int)Math.ceil(text.getLength() * numPartitions / (double)MAX_LENGTH) - 1;
     }
 }

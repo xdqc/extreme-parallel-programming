@@ -4,6 +4,9 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 
+/**
+ * The comparator class that sorts words by length in a descending order.
+ */
 public class InvertedIndexComparator extends WritableComparator {
     public InvertedIndexComparator() {
         super(Text.class, true);
@@ -11,8 +14,6 @@ public class InvertedIndexComparator extends WritableComparator {
 
     @Override
     public int compare(WritableComparable a, WritableComparable b) {
-        String w1 = a.toString();
-        String w2 = b.toString();
-        return Integer.compare(w2.length(), w1.length());
+        return Integer.compare(b.toString().length(), a.toString().length());
     }
 }

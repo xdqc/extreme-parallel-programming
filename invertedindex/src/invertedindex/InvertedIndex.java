@@ -11,11 +11,19 @@ import org.apache.hadoop.util.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * The main class for creating inverted index
+ */
 public class InvertedIndex extends Configured implements Tool {
-    private static int numReduces = 8;
+    /**
+     * Default number of reducers=8, user can pass in args[2] to change it
+     */
+    private static int numReducers = 8;
 
     public int run(String[] args) throws Exception {
         Configuration conf = new Configuration();
+
+        // Load stopwords from external file
         conf.setStrings("stopwords", Files.readAllLines(Paths.get("stopwords_google.txt")).toArray(new String[0]));
 
         Job job = Job.getInstance(conf,"word count");
@@ -25,11 +33,11 @@ public class InvertedIndex extends Configured implements Tool {
         job.setOutputValueClass(IntArrayWritable.class);
 
         job.setMapperClass(InvertedIndexMapper.class);
-        job.setPartitionerClass(InvertedIndexPartitioner.class);
-        job.setCombinerClass(InvertedIndexCombiner.class);
-        job.setSortComparatorClass(InvertedIndexComparator.class);
+//        job.setPartitionerClass(InvertedIndexPartitioner.class);
+//        job.setCombinerClass(InvertedIndexCombiner.class);
+//        job.setSortComparatorClass(InvertedIndexComparator.class);
         job.setReducerClass(InvertedIndexReducer.class);
-        job.setNumReduceTasks(numReduces);
+        job.setNumReduceTasks(numReducers);
 
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
@@ -49,7 +57,7 @@ public class InvertedIndex extends Configured implements Tool {
         } else {
             // We convert args[2] to number of reducers
             if (args.length == 3) {
-                numReduces = Integer.parseInt(args[2]);
+                numReducers = Integer.parseInt(args[2]);
             }
 
             result = ToolRunner.run(new InvertedIndex(), args);

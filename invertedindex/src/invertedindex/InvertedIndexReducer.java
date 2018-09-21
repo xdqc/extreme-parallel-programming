@@ -8,34 +8,48 @@ import java.io.IOException;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+/**
+ * The reducer class for inverted indexer,
+ */
 public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, IntWritable> {
     private int documentId = 0;
     private int lineId = 0;
     private int sentencePosition = 0;
+    static private int count = 0;
 
+    /**
+     * Reduce the output, with updating of customized counter
+     */
     public void reduce(Text key, Iterable<IntArrayWritable> values,
                        Context context) throws IOException, InterruptedException {
+
+        System.out.println(key.toString() + "\t\t" + ++count);
+
 
         // Use TreeMap & TreeSet to keep the order of documentId and lindId
         TreeMap<Integer, TreeSet<SentencePosition>> documentCount = new TreeMap<>();
 
         int sum = 0;
         for (IntArrayWritable x : values) {
-            documentId = ((IntWritable)x.get()[0]).get();
-            lineId = ((IntWritable)x.get()[1]).get();
-            sentencePosition = ((IntWritable)x.get()[2]).get();
-            sum++;
+            // every 3 consecutive elements of the IntArrayWritable represent the documentId, lindId and sentencePosition respectively
+            for (int i = 0; i < x.get().length; i+=3) {
+                documentId = ((IntWritable)x.get()[i]).get();
+                lineId = ((IntWritable)x.get()[i+1]).get();
+                sentencePosition = ((IntWritable)x.get()[i+2]).get();
+                sum++;
 
-            if (documentCount.containsKey(documentId)){
-                TreeSet<SentencePosition> line = documentCount.get(documentId);
-                line.add(new SentencePosition(lineId, sentencePosition));
-            } else {
-                TreeSet<SentencePosition> line = new TreeSet<>();
-                line.add(new SentencePosition(lineId, sentencePosition));
-                documentCount.put(documentId, line);
+                if (documentCount.containsKey(documentId)){
+                    TreeSet<SentencePosition> line = documentCount.get(documentId);
+                    line.add(new SentencePosition(lineId, sentencePosition));
+                } else {
+                    TreeSet<SentencePosition> line = new TreeSet<>();
+                    line.add(new SentencePosition(lineId, sentencePosition));
+                    documentCount.put(documentId, line);
+                }
             }
         }
 
+        // Write tree-like output (the Inverted Index)
         context.write(key, new IntWritable(sum));
         for (int docId: documentCount.keySet()) {
             Text text = new Text();
@@ -50,29 +64,33 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
             }
         }
 
-        // User defined counter
+        // Update user defined counter
         if (isPalindrome(key.toString())) {
             context.getCounter(InterestingCounter.Palindromes).increment(1);
         }
     }
 
     /**
-     * Check if a string is a palindrome
+     * Check whether a string is a palindrome
      */
     private boolean isPalindrome(String word){
         int length = word.length();
         if (length <= 2) return false;
 
+        // ignore case
+        word = word.toLowerCase();
+
         for (int i = 0; i < length / 2; i++) {
-            if (word.charAt(i) == word.charAt(length-i-1)) {
+            if (word.charAt(i) != word.charAt(length-i-1)) {
                 return false;
             }
         }
+        System.out.println("P_____"+ word);
         return true;
     }
 
     /**
-     * A Tuple2<Integer, Integer> as comparable element of TreeSet
+     * A Tuple2 implements comparable as the element of TreeSet
      */
     private class SentencePosition implements Comparable<SentencePosition> {
         final int lineId;
