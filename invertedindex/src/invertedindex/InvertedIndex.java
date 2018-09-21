@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 
 public class InvertedIndex extends Configured implements Tool {
     private static int numReduces = 8;
+
     public int run(String[] args) throws Exception {
         Configuration conf = new Configuration();
         conf.setStrings("stopwords", Files.readAllLines(Paths.get("stopwords_google.txt")).toArray(new String[0]));
@@ -24,6 +25,7 @@ public class InvertedIndex extends Configured implements Tool {
         job.setOutputValueClass(IntArrayWritable.class);
 
         job.setMapperClass(InvertedIndexMapper.class);
+        job.setPartitionerClass(InvertedIndexPartitioner.class);
         job.setCombinerClass(InvertedIndexCombiner.class);
         job.setSortComparatorClass(InvertedIndexComparator.class);
         job.setReducerClass(InvertedIndexReducer.class);
@@ -46,7 +48,9 @@ public class InvertedIndex extends Configured implements Tool {
             result = -1;
         } else {
             // We convert args[2] to number of reducers
-
+            if (args.length == 3) {
+                numReduces = Integer.parseInt(args[2]);
+            }
 
             result = ToolRunner.run(new InvertedIndex(), args);
         }

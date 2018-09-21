@@ -9,5 +9,7 @@ public class InvertedIndexCombiner extends Reducer<Text, IntArrayWritable, Text,
     protected void reduce(Text key, Iterable<IntArrayWritable> values, Context context) throws IOException, InterruptedException {
 
         super.reduce(key, values, context);
+
+
     }
 }

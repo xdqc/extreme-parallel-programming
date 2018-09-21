@@ -10,6 +10,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.StringTokenizer;
 
+/**
+ * The mapper class for inverted indexer
+ */
 public class InvertedIndexMapper extends Mapper<LongWritable, Text, Text, IntArrayWritable> {
 
     private Text word = new Text();
@@ -17,9 +20,8 @@ public class InvertedIndexMapper extends Mapper<LongWritable, Text, Text, IntArr
     private int lineId = 0;
     private int sentencePosition = 0;
 
-    // Use HashSet for fast search
+    // Use HashSet for fast search stopwords
     private static HashSet<String> stopwords = new HashSet<>();
-
 
     public void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
@@ -48,6 +50,7 @@ public class InvertedIndexMapper extends Mapper<LongWritable, Text, Text, IntArr
             word.set(token);
             context.write(word, new IntArrayWritable(new int[]{documentId, lineId, sentencePosition}));
             sentencePosition++;
+
         }
     }
 }

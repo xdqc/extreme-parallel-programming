@@ -49,6 +49,26 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
                 context.write(tx, new IntWritable(pos.wordPos));
             }
         }
+
+        // User defined counter
+        if (isPalindrome(key.toString())) {
+            context.getCounter(InterestingCounter.Palindromes).increment(1);
+        }
+    }
+
+    /**
+     * Check if a string is a palindrome
+     */
+    private boolean isPalindrome(String word){
+        int length = word.length();
+        if (length <= 2) return false;
+
+        for (int i = 0; i < length / 2; i++) {
+            if (word.charAt(i) == word.charAt(length-i-1)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -68,4 +88,5 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
             return Integer.compare(this.lineId, o.lineId);
         }
     }
+
 }
