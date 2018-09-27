@@ -15,7 +15,6 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
     private int documentId = 0;
     private int lineId = 0;
     private int sentencePosition = 0;
-    static private int count = 0;
 
     /**
      * Reduce the output, with updating of customized counter
@@ -23,49 +22,48 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
     public void reduce(Text key, Iterable<IntArrayWritable> values,
                        Context context) throws IOException, InterruptedException {
 
-        System.out.println(key.toString() + "\t\t" + ++count);
-
-
         // Use TreeMap & TreeSet to keep the order of documentId and lindId
-        TreeMap<Integer, TreeSet<SentencePosition>> documentCount = new TreeMap<>();
+        TreeMap<Integer, TreeSet<SentencePosition>> invertedIndex = new TreeMap<>();
 
         int sum = 0;
         for (IntArrayWritable x : values) {
             // every 3 consecutive elements of the IntArrayWritable represent the documentId, lindId and sentencePosition respectively
-            for (int i = 0; i < x.get().length; i+=3) {
-                documentId = ((IntWritable)x.get()[i]).get();
-                lineId = ((IntWritable)x.get()[i+1]).get();
-                sentencePosition = ((IntWritable)x.get()[i+2]).get();
+            for (int i = 0; i < x.get().length; i += 3) {
+                documentId = ((IntWritable) x.get()[i]).get();
+                lineId = ((IntWritable) x.get()[i + 1]).get();
+                sentencePosition = ((IntWritable) x.get()[i + 2]).get();
                 sum++;
 
-                if (documentCount.containsKey(documentId)){
-                    TreeSet<SentencePosition> line = documentCount.get(documentId);
+                if (invertedIndex.containsKey(documentId)) {
+                    TreeSet<SentencePosition> line = invertedIndex.get(documentId);
                     line.add(new SentencePosition(lineId, sentencePosition));
                 } else {
                     TreeSet<SentencePosition> line = new TreeSet<>();
                     line.add(new SentencePosition(lineId, sentencePosition));
-                    documentCount.put(documentId, line);
+                    invertedIndex.put(documentId, line);
                 }
             }
         }
 
         // Write tree-like output (the Inverted Index)
         context.write(key, new IntWritable(sum));
-        for (int docId: documentCount.keySet()) {
+        for (int docId : invertedIndex.keySet()) {
             Text text = new Text();
-            text.set("\t"+String.valueOf(docId));
-            TreeSet<SentencePosition> lines = documentCount.get(docId);
+            text.set("\t" + String.valueOf(docId));
+            TreeSet<SentencePosition> lines = invertedIndex.get(docId);
             context.write(text, new IntWritable(lines.size()));
 
             for (SentencePosition pos : lines) {
                 Text tx = new Text();
-                tx.set("\t\t"+String.valueOf(pos.lineId));
+                tx.set("\t\t" + String.valueOf(pos.lineId));
                 context.write(tx, new IntWritable(pos.wordPos));
             }
         }
 
         // Update user defined counter
-        if (isPalindrome(key.toString())) {
+        if (key.toString().matches("^[0-9]+$")) {
+            context.getCounter("Pure number", "First digit " + key.toString().charAt(0)).increment(1);
+        } else if (isPalindrome(key.toString())) {
             context.getCounter(InterestingCounter.Palindromes).increment(1);
         }
     }
@@ -73,7 +71,7 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
     /**
      * Check whether a string is a palindrome
      */
-    private boolean isPalindrome(String word){
+    private boolean isPalindrome(String word) {
         int length = word.length();
         if (length <= 2) return false;
 
@@ -81,11 +79,10 @@ public class InvertedIndexReducer extends Reducer<Text, IntArrayWritable, Text, 
         word = word.toLowerCase();
 
         for (int i = 0; i < length / 2; i++) {
-            if (word.charAt(i) != word.charAt(length-i-1)) {
+            if (word.charAt(i) != word.charAt(length - i - 1)) {
                 return false;
             }
         }
-        System.out.println("P_____"+ word);
         return true;
     }
 

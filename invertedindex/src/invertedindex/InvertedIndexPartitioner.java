@@ -17,13 +17,14 @@ public class InvertedIndexPartitioner extends Partitioner<Text, IntArrayWritable
     /**
      * Get partition of a given key
      *
-     * @param text the key
+     * @param text             the key
      * @param intArrayWritable the output of Mapper
-     * @param numPartitions same as number of reducers
+     * @param numPartitions    same as number of reducers
      * @return partition index
      */
     @Override
     public int getPartition(Text text, IntArrayWritable intArrayWritable, int numPartitions) {
-        return (int)Math.ceil(text.getLength() * numPartitions / (double)MAX_LENGTH) - 1;
+        int partition = (int) Math.ceil(text.getLength() * numPartitions / (double) MAX_LENGTH) - 1;
+        return partition < numPartitions ? partition : numPartitions - 1; // for safety
     }
 }

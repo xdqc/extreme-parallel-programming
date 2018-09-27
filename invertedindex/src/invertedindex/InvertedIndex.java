@@ -33,9 +33,9 @@ public class InvertedIndex extends Configured implements Tool {
         job.setOutputValueClass(IntArrayWritable.class);
 
         job.setMapperClass(InvertedIndexMapper.class);
-//        job.setPartitionerClass(InvertedIndexPartitioner.class);
-//        job.setCombinerClass(InvertedIndexCombiner.class);
-//        job.setSortComparatorClass(InvertedIndexComparator.class);
+        job.setPartitionerClass(InvertedIndexPartitioner.class);
+        job.setCombinerClass(InvertedIndexCombiner.class);
+        job.setSortComparatorClass(InvertedIndexComparator.class);
         job.setReducerClass(InvertedIndexReducer.class);
         job.setNumReduceTasks(numReducers);
 

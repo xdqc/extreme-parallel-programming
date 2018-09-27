@@ -14,14 +14,15 @@ public class InvertedIndexCombiner extends Reducer<Text, IntArrayWritable, Text,
     private int documentId = 0;
     private int lineId = 0;
     private int sentencePosition = 0;
-    static private int count = 0;
 
     protected void reduce(Text key, Iterable<IntArrayWritable> values, Context context) throws IOException, InterruptedException {
         ArrayList<Integer> wordPositions = new ArrayList<>();
+
+        // combine mapper output values with the same key
         for (IntArrayWritable x : values) {
-            documentId = ((IntWritable)x.get()[0]).get();
-            lineId = ((IntWritable)x.get()[1]).get();
-            sentencePosition = ((IntWritable)x.get()[2]).get();
+            documentId = ((IntWritable) x.get()[0]).get();
+            lineId = ((IntWritable) x.get()[1]).get();
+            sentencePosition = ((IntWritable) x.get()[2]).get();
 
             wordPositions.add(documentId);
             wordPositions.add(lineId);

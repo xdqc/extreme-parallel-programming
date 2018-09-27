@@ -63,3 +63,5 @@ invertedindex/input/CORESS_1
 completablefuture_assignment/fullnames
 **/LewisCarroll
 **/input
+*.tar.gz
+.gz

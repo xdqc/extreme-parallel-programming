@@ -14,6 +14,13 @@ public class InvertedIndexComparator extends WritableComparator {
 
     @Override
     public int compare(WritableComparable a, WritableComparable b) {
-        return Integer.compare(b.toString().length(), a.toString().length());
+        String w1 = a.toString();
+        String w2 = b.toString();
+        if (w1.length() == w2.length()) {
+            // prevent the comparator combining two keys with same length
+            return w1.compareTo(w2);
+        } else {
+            return Integer.compare(w2.length(), w1.length());
+        }
     }
 }
