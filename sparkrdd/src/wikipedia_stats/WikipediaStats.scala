@@ -42,16 +42,32 @@ object WikipediaStats {
       }
       conListBuffer.toList
     }
+    
+    /** returns the number of contributors this article has */
+    def contributorConut(): Int = contributors.length
 
     /**
      * a helper method that returns a list of tuple(Item1, Item2)
      *  Item1: contributor
      *  Item2: the revision that contributor made
      */
-    def contributorAndRevision(): List[(String, ArticleRevision)] = null
+    def contributorAndRevision(): List[(String, ArticleRevision)] = {
+      val conListBuffer = ListBuffer[(String, ArticleRevision)]();
+      for (revision <- revisions) {
+        val t = (revision.contributor, revision)
+        conListBuffer += t
+      }
+      conListBuffer.toList
+    }
 
     /** a helper method that returns a list of years in which revisions were made */
-    def revisionYears(): List[Int] = null
+    def revisionYears(): List[Int] = {
+      val yearsBuffer = ListBuffer[Int]();
+      for (revision <- revisions) {
+        yearsBuffer += revision.revisionYear()
+      }
+      yearsBuffer.toList
+    }
 
     override def toString(): String = {
       val buf = new StringBuilder
@@ -183,7 +199,7 @@ object WikipediaStats {
     //a handle to the Spark framework
     val sc = new SparkContext(sparkConf)
     val waRdd: RDD[WikipediaArticle] = timed("generateWikipediaRdd", generateWikipediaRdd(args(0), sc))
-    waRdd.take(1).foreach(println)
+//    waRdd.take(1).foreach(println)
     println(timing)
 
     //test the functions and generate answers to questions here
@@ -193,10 +209,22 @@ object WikipediaStats {
 //    val Q2 = numOfUniqueContributors(waRdd);
 //    println("Q2: ", Q2)
     
-    waRdd
-      .map{ wa => wa.contributors()}
-      .distinct()
-      .foreach(f => println(f.count(s => s != "")))
+//    val Q3 = yearsWikipediaArticlesCreated(waRdd);
+//    println("Q3: ", Q3)
+
+//    val Q4 = numOfArticlesWithMinRevisionsAndMinContributors(waRdd, 100, 10);
+//    println("Q4: ", Q4)
+
+//    val Q5 = sortArticlesByNumRevisions(waRdd).take(3).toList;
+//    println("Q5: ", Q5)
+    
+    val Q6 = sortContributorsByNumRevisions(waRdd).take(30).toList;
+    println("Q6: ", Q6)
+    
+//    waRdd
+//      .map{ wa => wa.contributors()}
+//      .distinct()
+//      .foreach(f => println(f.count(s => s != "")))
 
     sc.stop()
   }
@@ -223,7 +251,7 @@ object WikipediaStats {
    */
   def numOfUniqueContributors(waRdd: RDD[WikipediaArticle]): Long = {
     waRdd
-      .map{ wa => wa.contributors() }
+      .flatMap{ wa => wa.contributors() }
       .distinct()
       .count()
   }
@@ -234,7 +262,12 @@ object WikipediaStats {
    * @param waRdd : a RDD of WikipediaArticle instances
    * @return a list of unique years in which wikipedia articles were created (e.g. the first revision)
    */
-  def yearsWikipediaArticlesCreated(waRdd: RDD[WikipediaArticle]): List[Int] = null
+  def yearsWikipediaArticlesCreated(waRdd: RDD[WikipediaArticle]): List[Int] = {
+    waRdd
+      .map { wa => wa.revisionYears().last }
+      .collect
+      .toList
+  }
 
   /**
    * calculates the number of wikipedia articles that have at least a certain number of revisions
@@ -246,7 +279,11 @@ object WikipediaStats {
    * @return the number of articles that have at least minRevisions number of revisions (inclusive)
    *        and at least minContributors number of unique contributors (inclusive)
    */
-  def numOfArticlesWithMinRevisionsAndMinContributors(waRdd: RDD[WikipediaArticle], minRevisions: Int, minContributors: Int): Long = -1L
+  def numOfArticlesWithMinRevisionsAndMinContributors(waRdd: RDD[WikipediaArticle], minRevisions: Int, minContributors: Int): Long = {
+    waRdd
+      .filter(wa => wa.revisionCount() >= minRevisions && wa.contributorConut() >= minContributors)
+      .count()
+  }
 
   /**
    * generates a pair RDD of tuples of the title of an article and the number of revisions it has,
@@ -257,7 +294,11 @@ object WikipediaStats {
    * K: title of an article,
    * V: the number of revisions
    */
-  def sortArticlesByNumRevisions(waRdd: RDD[WikipediaArticle]): RDD[(String, Int)] = null
+  def sortArticlesByNumRevisions(waRdd: RDD[WikipediaArticle]): RDD[(String, Int)] = {
+    waRdd
+      .map{ wa => (wa.title, wa.revisionCount()) }
+      .sortBy(_._2, false)
+  }
 
   /**
    * generates a pair RDD of tuples of the contributor and the number of revisions the contributor made,
@@ -268,7 +309,13 @@ object WikipediaStats {
    * K: contributor
    * V: the number of revisions the contributor made
    */
-  def sortContributorsByNumRevisions(waRdd: RDD[WikipediaArticle]): RDD[(String, Int)] = null
+  def sortContributorsByNumRevisions(waRdd: RDD[WikipediaArticle]): RDD[(String, Int)] = {
+    waRdd
+      .flatMap{ wa => wa.contributors() }
+      .map((_,1))
+      .reduceByKey(_ + _)
+      .sortBy(_._2, false)
+  }
 
   /**
    * generates a pair RDD of tuples of the year of revision and an Iterable of ArticleRevisions made in that year
