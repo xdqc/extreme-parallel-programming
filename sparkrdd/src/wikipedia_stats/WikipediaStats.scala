@@ -5,6 +5,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
+import org.apache.spark.HashPartitioner
 
 /** Scala imports */
 import scala.util.matching.Regex
@@ -67,6 +68,10 @@ object WikipediaStats {
         yearsBuffer += revision.revisionYear()
       }
       yearsBuffer.toList
+    }
+    
+    def getRevisions(): List[ArticleRevision] = {
+      revisions
     }
 
     override def toString(): String = {
@@ -202,29 +207,46 @@ object WikipediaStats {
 //    waRdd.take(1).foreach(println)
     println(timing)
 
+    waRdd.persist()
+    
     //test the functions and generate answers to questions here
-//    val Q1 = numOfArticlesAndRevsions(waRdd);
-//    println("Q1: ", Q1);
+    val Q1 = numOfArticlesAndRevsions(waRdd);
+    println("Q1: ", Q1);
     
-//    val Q2 = numOfUniqueContributors(waRdd);
-//    println("Q2: ", Q2)
+    val Q2 = numOfUniqueContributors(waRdd);
+    println("Q2: ", Q2)
     
-//    val Q3 = yearsWikipediaArticlesCreated(waRdd);
-//    println("Q3: ", Q3)
+    val Q3 = yearsWikipediaArticlesCreated(waRdd);
+    println("Q3: ", Q3)
 
-//    val Q4 = numOfArticlesWithMinRevisionsAndMinContributors(waRdd, 100, 10);
-//    println("Q4: ", Q4)
+    val Q4 = numOfArticlesWithMinRevisionsAndMinContributors(waRdd, 100, 10);
+    println("Q4: ", Q4)
 
-//    val Q5 = sortArticlesByNumRevisions(waRdd).take(3).toList;
-//    println("Q5: ", Q5)
+    val Q5 = sortArticlesByNumRevisions(waRdd).take(3).toList;
+    println("Q5: ", Q5)
     
-    val Q6 = sortContributorsByNumRevisions(waRdd).take(30).toList;
+    val Q6 = sortContributorsByNumRevisions(waRdd).take(3).toList;
     println("Q6: ", Q6)
     
-//    waRdd
-//      .map{ wa => wa.contributors()}
-//      .distinct()
-//      .foreach(f => println(f.count(s => s != "")))
+    val yearGroupedRdd = groupArticleRevisionsByYear(waRdd).persist()
+    
+    val Q7 = lookupYearGroupedArticleRevisions(yearGroupedRdd, totalArticlesFunc).lookup(2014)
+    println("Q7: ", Q7)
+      
+    val Q8 = lookupYearGroupedArticleRevisions(yearGroupedRdd, totalContributorsFunc).lookup(2014)
+    println("Q8: ", Q8)
+    
+    val Q9 = contributorAndNumRevisionsPerYear(yearGroupedRdd).filter(_._1==2013).first()._2.get("Magioladitis")
+    println("Q9: ", Q9)
+    
+    val waRdd2: RDD[WikipediaArticle] = timed("generateWikipediaRdd", generateWikipediaRdd(args(1), sc))
+    waRdd2.persist()
+    
+    val Q10 = filterContributorCogroupedDatasets(cogroupTwoDatasetsByContributor(waRdd,waRdd2), notEmptyPredic).count
+    println("Q10 ", Q10)
+      
+    val Q11 = filterContributorCogroupedDatasets(cogroupTwoDatasetsByContributor(waRdd,waRdd2), inYearPredic).count
+    println("Q11 ", Q11)
 
     sc.stop()
   }
@@ -325,7 +347,11 @@ object WikipediaStats {
    * K: the year of the revision
    * V: an Iterable of ArticleRevsions made in that year
    */
-  def groupArticleRevisionsByYear(waRdd: RDD[WikipediaArticle]): RDD[(Int, Iterable[ArticleRevision])] = null
+  def groupArticleRevisionsByYear(waRdd: RDD[WikipediaArticle]): RDD[(Int, Iterable[ArticleRevision])] = {
+    waRdd
+      .flatMap{ wa => wa.getRevisions() }
+      .groupBy(_.revisionYear())
+  }
 
   /**
    * generates a pair RDD of tuples of the year of revision and the integer result returned by the function passed in as an argument
@@ -336,7 +362,9 @@ object WikipediaStats {
    * K: the year of the revision
    * V: the result of func
    */
-  def lookupYearGroupedArticleRevisions(yearGroupedRdd: RDD[(Int, Iterable[ArticleRevision])], func: (Iterable[ArticleRevision]) => Int): RDD[(Int, Int)] = null
+  def lookupYearGroupedArticleRevisions(yearGroupedRdd: RDD[(Int, Iterable[ArticleRevision])], func: (Iterable[ArticleRevision]) => Int): RDD[(Int, Int)] = {
+    yearGroupedRdd.map(t => (t._1, func(t._2)))
+  }
 
   /**
    * uses groupArticlesByYearOfLastRevision and lookupYearGroupedWikipediaArticles
@@ -348,14 +376,33 @@ object WikipediaStats {
   def testLookupYearGroupedArticleRevisions(yearGroupedRdd: RDD[(Int, Iterable[ArticleRevision])]): Unit = {
 
     //a function to calculate the number of revisions
-    val totalArticlesFunc: (Iterable[ArticleRevision]) => Int = null
-    //TODO: use totalArticlesFunc to answer Q6
+    val totalArticlesFunc: (Iterable[ArticleRevision]) => Int = {
+      iter => {
+        iter.count(x=>true)
+      }
+    }
+
 
     //a function to calculate the number of unique contributors
-    val totalContributorsFunc: (Iterable[ArticleRevision]) => Int = null
-    //TODO: use totalContributorsFunc to answer Q7
+    val totalContributorsFunc: (Iterable[ArticleRevision]) => Int = {
+      iter => {
+        iter.map(_.contributor).toSet.count(x=>true)
+      }
+    }
 
   }
+  
+  def totalArticlesFunc: (Iterable[ArticleRevision]) => Int = {
+      iter => {
+        iter.count(x=>true)
+      }
+    }
+  
+  def totalContributorsFunc: (Iterable[ArticleRevision]) => Int = {
+      iter => {
+        iter.map(_.contributor).toSet.count(x=>true)
+      }
+    }
 
   /**
    * generates a pair RDD of tuples of the revision year and a map of contributor and the number of revisions that contributor made
@@ -369,7 +416,10 @@ object WikipediaStats {
    */
   def contributorAndNumRevisionsPerYear(yearGroupedRdd: RDD[(Int, Iterable[ArticleRevision])]): RDD[(Int, Map[String, Int])] = {
     //Hint: use groupArticleRevsionsByYear to get yearGroupedRdd
-    null
+    yearGroupedRdd
+      .map(t => (t._1, t._2
+           .groupBy(_.contributor)
+           .mapValues(_.size)))
   }
 
   /**
@@ -380,7 +430,11 @@ object WikipediaStats {
    * K: contributor
    * V: the revision made by the contributor
    */
-  def generateContributorPatitionedRdd(waRdd: RDD[WikipediaArticle], numPartitions: Int): RDD[(String, ArticleRevision)] = null
+  def generateContributorPatitionedRdd(waRdd: RDD[WikipediaArticle], numPartitions: Int): RDD[(String, ArticleRevision)] = {
+    waRdd
+      .flatMap{ wa => wa.contributorAndRevision }
+      .partitionBy(new HashPartitioner(numPartitions))
+  }
 
   /**
    * a helper method that cogroups two co-partitioned pair RDD of (contributor, ArticleRevision),
@@ -397,8 +451,7 @@ object WikipediaStats {
    */
   def cogroupTwoDatasetsByContributor(waRdd1: RDD[WikipediaArticle], waRdd2: RDD[WikipediaArticle]): RDD[(String, (Iterable[ArticleRevision], Iterable[ArticleRevision]))] = {
     //you may want to use generateContributorPatitionedRdd in this method
-
-    null
+    generateContributorPatitionedRdd(waRdd1, 2).cogroup(generateContributorPatitionedRdd(waRdd2,2))
   }
 
   /**
@@ -416,7 +469,9 @@ object WikipediaStats {
    */
   def filterContributorCogroupedDatasets(
     contributorCogroupedRdd: RDD[(String, (Iterable[ArticleRevision], Iterable[ArticleRevision]))],
-    filterPred:              (Iterable[ArticleRevision]) => Boolean): RDD[(String, (Iterable[ArticleRevision], Iterable[ArticleRevision]))] = null
+    filterPred:              (Iterable[ArticleRevision]) => Boolean): RDD[(String, (Iterable[ArticleRevision], Iterable[ArticleRevision]))] = {
+    contributorCogroupedRdd.filter(t => filterPred(t._2._1) && filterPred(t._2._2))
+  }
 
   /**
    * uses cogroupTwoDatasetsByContributor and filterContributorCogroupedDatasets
@@ -429,12 +484,22 @@ object WikipediaStats {
   def testFilterContributorCogroupedDatasets(waRdd1: RDD[WikipediaArticle], waRdd2: RDD[WikipediaArticle]): Unit = {
 
     //a Predicate that tests the Iterable is not empty
-    val notEmptyPredic: (Iterable[ArticleRevision]) => Boolean = null
-    //TODO: use notEmptyPredic to answer Q10
-
+    val notEmptyPredic: (Iterable[ArticleRevision]) => Boolean = {
+      it => it.nonEmpty
+    }
+    
     //A Predicate that tests there is at least one revision made in 2013
-    val inYearPredic: (Iterable[ArticleRevision]) => Boolean = null
-    //TODO: use inYearPredic to answer Q11
+    val inYearPredic: (Iterable[ArticleRevision]) => Boolean = {
+      it => it.filter(_.revisionYear() == 2013).nonEmpty
+    }
   }
 
+  def notEmptyPredic: (Iterable[ArticleRevision]) => Boolean = {
+      it => it.nonEmpty
+    }
+  
+  def inYearPredic: (Iterable[ArticleRevision]) => Boolean = {
+      it => it.filter(_.revisionYear() == 2013).nonEmpty
+    }
+  
 }
